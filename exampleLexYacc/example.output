@@ -1,0 +1,1437 @@
+State 7 conflicts: 8 shift/reduce
+State 17 conflicts: 8 shift/reduce
+State 18 conflicts: 8 shift/reduce
+State 19 conflicts: 8 shift/reduce, 9 reduce/reduce
+State 20 conflicts: 8 shift/reduce
+State 21 conflicts: 8 shift/reduce, 9 reduce/reduce
+State 27 conflicts: 8 shift/reduce, 1 reduce/reduce
+State 67 conflicts: 1 shift/reduce
+State 83 conflicts: 8 shift/reduce
+State 87 conflicts: 8 shift/reduce
+State 89 conflicts: 8 shift/reduce
+State 90 conflicts: 8 shift/reduce, 9 reduce/reduce
+State 91 conflicts: 8 shift/reduce
+State 92 conflicts: 8 shift/reduce, 9 reduce/reduce
+State 94 conflicts: 8 shift/reduce, 1 reduce/reduce
+
+
+Grammar
+
+    0 $accept: S $end
+
+    1 S: SET_BPM VOL LINE
+
+    2 SET_BPM: BPM NUM
+
+    3 VOL: VOLUME NUM
+
+    4 OPEN_BRACKET: '{'
+
+    5 CLOSE_BRACKET: '}'
+
+    6 WHILE_LOOP: WHILE '(' CONDITION ')' OPEN_BRACKET BODY CLOSE_BRACKET
+
+    7 BODY: BODY_LINE
+
+    8 PLAY_FUNC: PLAY NOTE_VAL DURING NUM
+
+    9 LENGTH_FUNC: LENGTH '(' NOTE_ARRAY ')'
+   10            | LENGTH '(' ID ')'
+
+   11 EXPRESION: ASSIGNATION
+   12          | CONDITION
+   13          | NOTE_VAL
+   14          | NUM
+   15          | LENGTH_FUNC
+
+   16 CONDITION: ID '>' NUM
+   17          | NUM '>' ID
+   18          | NUM '>' NUM
+
+   19 ASSIGNATION: NOTE_ASSIGNATION
+   20            | INT_ASSIGNATION
+   21            | ID '=' EXPRESION
+   22            | NOTE_T '[' ']' ID '=' NOTE_ARRAY
+   23            | ID '-' '-'
+
+   24 NOTE_ASSIGNATION: NOTE_T ID '=' NOTE
+
+   25 NOTE_VAL: ID '[' NUM ']'
+   26         | ID '[' ID ']'
+   27         | NOTE_VAL '+' NUM
+   28         | NOTE_VAL '+' NOTE_VAL
+   29         | NOTE
+
+   30 INT_ASSIGNATION: INT_T ID '=' NUM
+   31                | INT_T ID '=' ID
+   32                | INT_T ID '=' LENGTH_FUNC
+
+   33 NOTE_ARRAY: '[' NOTE_LIST ']'
+
+   34 NOTE_LIST: NOTE ',' NOTE_LIST
+   35          | NOTE
+
+   36 BODY_LINE: EXPRESION BODY_LINE
+   37          | WHILE_LOOP BODY_LINE
+   38          | PLAY_FUNC BODY_LINE
+   39          | LENGTH_FUNC BODY_LINE
+   40          | CONDITION BODY_LINE
+   41          | EMPTY_LINE BODY_LINE
+   42          | EMPTY_LINE
+
+   43 LINE: EXPRESION LINE
+   44     | WHILE_LOOP LINE
+   45     | PLAY_FUNC LINE
+   46     | LENGTH_FUNC LINE
+   47     | CONDITION LINE
+   48     | EMPTY_LINE LINE
+   49     | EMPTY_LINE
+
+   50 EMPTY_LINE: /* empty */
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 6 9 10
+')' (41) 6 9 10
+'+' (43) 27 28
+',' (44) 34
+'-' (45) 23
+'=' (61) 21 22 24 30 31 32
+'>' (62) 16 17 18
+'[' (91) 22 25 26 33
+']' (93) 22 25 26 33
+'{' (123) 4
+'}' (125) 5
+error (256)
+BPM (258) 2
+NUM (259) 2 3 8 14 16 17 18 25 27 30
+VOLUME (260) 3
+NOTE_T (261) 22 24
+NOTE (262) 24 29 34 35
+INT_T (263) 30 31 32
+ID (264) 10 16 17 21 22 23 24 25 26 30 31 32
+WHILE (265) 6
+PLAY (266) 8
+DURING (267) 8
+LENGTH (268) 9 10
+
+
+Nonterminals, with rules where they appear
+
+$accept (25)
+    on left: 0
+S (26)
+    on left: 1, on right: 0
+SET_BPM (27)
+    on left: 2, on right: 1
+VOL (28)
+    on left: 3, on right: 1
+OPEN_BRACKET (29)
+    on left: 4, on right: 6
+CLOSE_BRACKET (30)
+    on left: 5, on right: 6
+WHILE_LOOP (31)
+    on left: 6, on right: 37 44
+BODY (32)
+    on left: 7, on right: 6
+PLAY_FUNC (33)
+    on left: 8, on right: 38 45
+LENGTH_FUNC (34)
+    on left: 9 10, on right: 15 32 39 46
+EXPRESION (35)
+    on left: 11 12 13 14 15, on right: 21 36 43
+CONDITION (36)
+    on left: 16 17 18, on right: 6 12 40 47
+ASSIGNATION (37)
+    on left: 19 20 21 22 23, on right: 11
+NOTE_ASSIGNATION (38)
+    on left: 24, on right: 19
+NOTE_VAL (39)
+    on left: 25 26 27 28 29, on right: 8 13 27 28
+INT_ASSIGNATION (40)
+    on left: 30 31 32, on right: 20
+NOTE_ARRAY (41)
+    on left: 33, on right: 9 22
+NOTE_LIST (42)
+    on left: 34 35, on right: 33 34
+BODY_LINE (43)
+    on left: 36 37 38 39 40 41 42, on right: 7 36 37 38 39 40 41
+LINE (44)
+    on left: 43 44 45 46 47 48 49, on right: 1 43 44 45 46 47 48
+EMPTY_LINE (45)
+    on left: 50, on right: 41 42 48 49
+
+
+state 0
+
+    0 $accept: . S $end
+
+    BPM  shift, and go to state 1
+
+    S        go to state 2
+    SET_BPM  go to state 3
+
+
+state 1
+
+    2 SET_BPM: BPM . NUM
+
+    NUM  shift, and go to state 4
+
+
+state 2
+
+    0 $accept: S . $end
+
+    $end  shift, and go to state 5
+
+
+state 3
+
+    1 S: SET_BPM . VOL LINE
+
+    VOLUME  shift, and go to state 6
+
+    VOL  go to state 7
+
+
+state 4
+
+    2 SET_BPM: BPM NUM .
+
+    $default  reduce using rule 2 (SET_BPM)
+
+
+state 5
+
+    0 $accept: S $end .
+
+    $default  accept
+
+
+state 6
+
+    3 VOL: VOLUME . NUM
+
+    NUM  shift, and go to state 8
+
+
+state 7
+
+    1 S: SET_BPM VOL . LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 50 (EMPTY_LINE)
+
+    WHILE_LOOP        go to state 17
+    PLAY_FUNC         go to state 18
+    LENGTH_FUNC       go to state 19
+    EXPRESION         go to state 20
+    CONDITION         go to state 21
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    LINE              go to state 26
+    EMPTY_LINE        go to state 27
+
+
+state 8
+
+    3 VOL: VOLUME NUM .
+
+    $default  reduce using rule 3 (VOL)
+
+
+state 9
+
+   14 EXPRESION: NUM .
+   17 CONDITION: NUM . '>' ID
+   18          | NUM . '>' NUM
+
+    '>'  shift, and go to state 28
+
+    $default  reduce using rule 14 (EXPRESION)
+
+
+state 10
+
+   22 ASSIGNATION: NOTE_T . '[' ']' ID '=' NOTE_ARRAY
+   24 NOTE_ASSIGNATION: NOTE_T . ID '=' NOTE
+
+    ID   shift, and go to state 29
+    '['  shift, and go to state 30
+
+
+state 11
+
+   29 NOTE_VAL: NOTE .
+
+    $default  reduce using rule 29 (NOTE_VAL)
+
+
+state 12
+
+   30 INT_ASSIGNATION: INT_T . ID '=' NUM
+   31                | INT_T . ID '=' ID
+   32                | INT_T . ID '=' LENGTH_FUNC
+
+    ID  shift, and go to state 31
+
+
+state 13
+
+   16 CONDITION: ID . '>' NUM
+   21 ASSIGNATION: ID . '=' EXPRESION
+   23            | ID . '-' '-'
+   25 NOTE_VAL: ID . '[' NUM ']'
+   26         | ID . '[' ID ']'
+
+    '>'  shift, and go to state 32
+    '='  shift, and go to state 33
+    '['  shift, and go to state 34
+    '-'  shift, and go to state 35
+
+
+state 14
+
+    6 WHILE_LOOP: WHILE . '(' CONDITION ')' OPEN_BRACKET BODY CLOSE_BRACKET
+
+    '('  shift, and go to state 36
+
+
+state 15
+
+    8 PLAY_FUNC: PLAY . NOTE_VAL DURING NUM
+
+    NOTE  shift, and go to state 11
+    ID    shift, and go to state 37
+
+    NOTE_VAL  go to state 38
+
+
+state 16
+
+    9 LENGTH_FUNC: LENGTH . '(' NOTE_ARRAY ')'
+   10            | LENGTH . '(' ID ')'
+
+    '('  shift, and go to state 39
+
+
+state 17
+
+   44 LINE: WHILE_LOOP . LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 50 (EMPTY_LINE)
+
+    WHILE_LOOP        go to state 17
+    PLAY_FUNC         go to state 18
+    LENGTH_FUNC       go to state 19
+    EXPRESION         go to state 20
+    CONDITION         go to state 21
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    LINE              go to state 40
+    EMPTY_LINE        go to state 27
+
+
+state 18
+
+   45 LINE: PLAY_FUNC . LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 50 (EMPTY_LINE)
+
+    WHILE_LOOP        go to state 17
+    PLAY_FUNC         go to state 18
+    LENGTH_FUNC       go to state 19
+    EXPRESION         go to state 20
+    CONDITION         go to state 21
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    LINE              go to state 41
+    EMPTY_LINE        go to state 27
+
+
+state 19
+
+   15 EXPRESION: LENGTH_FUNC .
+   46 LINE: LENGTH_FUNC . LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    $end      reduce using rule 15 (EXPRESION)
+    $end      [reduce using rule 50 (EMPTY_LINE)]
+    NUM       [reduce using rule 15 (EXPRESION)]
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 15 (EXPRESION)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 15 (EXPRESION)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 15 (EXPRESION)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 15 (EXPRESION)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 15 (EXPRESION)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 15 (EXPRESION)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 15 (EXPRESION)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 15 (EXPRESION)
+
+    WHILE_LOOP        go to state 17
+    PLAY_FUNC         go to state 18
+    LENGTH_FUNC       go to state 19
+    EXPRESION         go to state 20
+    CONDITION         go to state 21
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    LINE              go to state 42
+    EMPTY_LINE        go to state 27
+
+
+state 20
+
+   43 LINE: EXPRESION . LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 50 (EMPTY_LINE)
+
+    WHILE_LOOP        go to state 17
+    PLAY_FUNC         go to state 18
+    LENGTH_FUNC       go to state 19
+    EXPRESION         go to state 20
+    CONDITION         go to state 21
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    LINE              go to state 43
+    EMPTY_LINE        go to state 27
+
+
+state 21
+
+   12 EXPRESION: CONDITION .
+   47 LINE: CONDITION . LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    $end      reduce using rule 12 (EXPRESION)
+    $end      [reduce using rule 50 (EMPTY_LINE)]
+    NUM       [reduce using rule 12 (EXPRESION)]
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 12 (EXPRESION)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 12 (EXPRESION)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 12 (EXPRESION)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 12 (EXPRESION)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 12 (EXPRESION)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 12 (EXPRESION)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 12 (EXPRESION)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 12 (EXPRESION)
+
+    WHILE_LOOP        go to state 17
+    PLAY_FUNC         go to state 18
+    LENGTH_FUNC       go to state 19
+    EXPRESION         go to state 20
+    CONDITION         go to state 21
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    LINE              go to state 44
+    EMPTY_LINE        go to state 27
+
+
+state 22
+
+   11 EXPRESION: ASSIGNATION .
+
+    $default  reduce using rule 11 (EXPRESION)
+
+
+state 23
+
+   19 ASSIGNATION: NOTE_ASSIGNATION .
+
+    $default  reduce using rule 19 (ASSIGNATION)
+
+
+state 24
+
+   13 EXPRESION: NOTE_VAL .
+   27 NOTE_VAL: NOTE_VAL . '+' NUM
+   28         | NOTE_VAL . '+' NOTE_VAL
+
+    '+'  shift, and go to state 45
+
+    $default  reduce using rule 13 (EXPRESION)
+
+
+state 25
+
+   20 ASSIGNATION: INT_ASSIGNATION .
+
+    $default  reduce using rule 20 (ASSIGNATION)
+
+
+state 26
+
+    1 S: SET_BPM VOL LINE .
+
+    $default  reduce using rule 1 (S)
+
+
+state 27
+
+   48 LINE: EMPTY_LINE . LINE
+   49     | EMPTY_LINE .
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    $end      reduce using rule 49 (LINE)
+    $end      [reduce using rule 50 (EMPTY_LINE)]
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 49 (LINE)
+
+    WHILE_LOOP        go to state 17
+    PLAY_FUNC         go to state 18
+    LENGTH_FUNC       go to state 19
+    EXPRESION         go to state 20
+    CONDITION         go to state 21
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    LINE              go to state 46
+    EMPTY_LINE        go to state 27
+
+
+state 28
+
+   17 CONDITION: NUM '>' . ID
+   18          | NUM '>' . NUM
+
+    NUM  shift, and go to state 47
+    ID   shift, and go to state 48
+
+
+state 29
+
+   24 NOTE_ASSIGNATION: NOTE_T ID . '=' NOTE
+
+    '='  shift, and go to state 49
+
+
+state 30
+
+   22 ASSIGNATION: NOTE_T '[' . ']' ID '=' NOTE_ARRAY
+
+    ']'  shift, and go to state 50
+
+
+state 31
+
+   30 INT_ASSIGNATION: INT_T ID . '=' NUM
+   31                | INT_T ID . '=' ID
+   32                | INT_T ID . '=' LENGTH_FUNC
+
+    '='  shift, and go to state 51
+
+
+state 32
+
+   16 CONDITION: ID '>' . NUM
+
+    NUM  shift, and go to state 52
+
+
+state 33
+
+   21 ASSIGNATION: ID '=' . EXPRESION
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    LENGTH  shift, and go to state 16
+
+    LENGTH_FUNC       go to state 53
+    EXPRESION         go to state 54
+    CONDITION         go to state 55
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+
+
+state 34
+
+   25 NOTE_VAL: ID '[' . NUM ']'
+   26         | ID '[' . ID ']'
+
+    NUM  shift, and go to state 56
+    ID   shift, and go to state 57
+
+
+state 35
+
+   23 ASSIGNATION: ID '-' . '-'
+
+    '-'  shift, and go to state 58
+
+
+state 36
+
+    6 WHILE_LOOP: WHILE '(' . CONDITION ')' OPEN_BRACKET BODY CLOSE_BRACKET
+
+    NUM  shift, and go to state 59
+    ID   shift, and go to state 60
+
+    CONDITION  go to state 61
+
+
+state 37
+
+   25 NOTE_VAL: ID . '[' NUM ']'
+   26         | ID . '[' ID ']'
+
+    '['  shift, and go to state 34
+
+
+state 38
+
+    8 PLAY_FUNC: PLAY NOTE_VAL . DURING NUM
+   27 NOTE_VAL: NOTE_VAL . '+' NUM
+   28         | NOTE_VAL . '+' NOTE_VAL
+
+    DURING  shift, and go to state 62
+    '+'     shift, and go to state 45
+
+
+state 39
+
+    9 LENGTH_FUNC: LENGTH '(' . NOTE_ARRAY ')'
+   10            | LENGTH '(' . ID ')'
+
+    ID   shift, and go to state 63
+    '['  shift, and go to state 64
+
+    NOTE_ARRAY  go to state 65
+
+
+state 40
+
+   44 LINE: WHILE_LOOP LINE .
+
+    $default  reduce using rule 44 (LINE)
+
+
+state 41
+
+   45 LINE: PLAY_FUNC LINE .
+
+    $default  reduce using rule 45 (LINE)
+
+
+state 42
+
+   46 LINE: LENGTH_FUNC LINE .
+
+    $default  reduce using rule 46 (LINE)
+
+
+state 43
+
+   43 LINE: EXPRESION LINE .
+
+    $default  reduce using rule 43 (LINE)
+
+
+state 44
+
+   47 LINE: CONDITION LINE .
+
+    $default  reduce using rule 47 (LINE)
+
+
+state 45
+
+   27 NOTE_VAL: NOTE_VAL '+' . NUM
+   28         | NOTE_VAL '+' . NOTE_VAL
+
+    NUM   shift, and go to state 66
+    NOTE  shift, and go to state 11
+    ID    shift, and go to state 37
+
+    NOTE_VAL  go to state 67
+
+
+state 46
+
+   48 LINE: EMPTY_LINE LINE .
+
+    $default  reduce using rule 48 (LINE)
+
+
+state 47
+
+   18 CONDITION: NUM '>' NUM .
+
+    $default  reduce using rule 18 (CONDITION)
+
+
+state 48
+
+   17 CONDITION: NUM '>' ID .
+
+    $default  reduce using rule 17 (CONDITION)
+
+
+state 49
+
+   24 NOTE_ASSIGNATION: NOTE_T ID '=' . NOTE
+
+    NOTE  shift, and go to state 68
+
+
+state 50
+
+   22 ASSIGNATION: NOTE_T '[' ']' . ID '=' NOTE_ARRAY
+
+    ID  shift, and go to state 69
+
+
+state 51
+
+   30 INT_ASSIGNATION: INT_T ID '=' . NUM
+   31                | INT_T ID '=' . ID
+   32                | INT_T ID '=' . LENGTH_FUNC
+
+    NUM     shift, and go to state 70
+    ID      shift, and go to state 71
+    LENGTH  shift, and go to state 16
+
+    LENGTH_FUNC  go to state 72
+
+
+state 52
+
+   16 CONDITION: ID '>' NUM .
+
+    $default  reduce using rule 16 (CONDITION)
+
+
+state 53
+
+   15 EXPRESION: LENGTH_FUNC .
+
+    $default  reduce using rule 15 (EXPRESION)
+
+
+state 54
+
+   21 ASSIGNATION: ID '=' EXPRESION .
+
+    $default  reduce using rule 21 (ASSIGNATION)
+
+
+state 55
+
+   12 EXPRESION: CONDITION .
+
+    $default  reduce using rule 12 (EXPRESION)
+
+
+state 56
+
+   25 NOTE_VAL: ID '[' NUM . ']'
+
+    ']'  shift, and go to state 73
+
+
+state 57
+
+   26 NOTE_VAL: ID '[' ID . ']'
+
+    ']'  shift, and go to state 74
+
+
+state 58
+
+   23 ASSIGNATION: ID '-' '-' .
+
+    $default  reduce using rule 23 (ASSIGNATION)
+
+
+state 59
+
+   17 CONDITION: NUM . '>' ID
+   18          | NUM . '>' NUM
+
+    '>'  shift, and go to state 28
+
+
+state 60
+
+   16 CONDITION: ID . '>' NUM
+
+    '>'  shift, and go to state 32
+
+
+state 61
+
+    6 WHILE_LOOP: WHILE '(' CONDITION . ')' OPEN_BRACKET BODY CLOSE_BRACKET
+
+    ')'  shift, and go to state 75
+
+
+state 62
+
+    8 PLAY_FUNC: PLAY NOTE_VAL DURING . NUM
+
+    NUM  shift, and go to state 76
+
+
+state 63
+
+   10 LENGTH_FUNC: LENGTH '(' ID . ')'
+
+    ')'  shift, and go to state 77
+
+
+state 64
+
+   33 NOTE_ARRAY: '[' . NOTE_LIST ']'
+
+    NOTE  shift, and go to state 78
+
+    NOTE_LIST  go to state 79
+
+
+state 65
+
+    9 LENGTH_FUNC: LENGTH '(' NOTE_ARRAY . ')'
+
+    ')'  shift, and go to state 80
+
+
+state 66
+
+   27 NOTE_VAL: NOTE_VAL '+' NUM .
+
+    $default  reduce using rule 27 (NOTE_VAL)
+
+
+state 67
+
+   27 NOTE_VAL: NOTE_VAL . '+' NUM
+   28         | NOTE_VAL . '+' NOTE_VAL
+   28         | NOTE_VAL '+' NOTE_VAL .
+
+    '+'  shift, and go to state 45
+
+    '+'       [reduce using rule 28 (NOTE_VAL)]
+    $default  reduce using rule 28 (NOTE_VAL)
+
+
+state 68
+
+   24 NOTE_ASSIGNATION: NOTE_T ID '=' NOTE .
+
+    $default  reduce using rule 24 (NOTE_ASSIGNATION)
+
+
+state 69
+
+   22 ASSIGNATION: NOTE_T '[' ']' ID . '=' NOTE_ARRAY
+
+    '='  shift, and go to state 81
+
+
+state 70
+
+   30 INT_ASSIGNATION: INT_T ID '=' NUM .
+
+    $default  reduce using rule 30 (INT_ASSIGNATION)
+
+
+state 71
+
+   31 INT_ASSIGNATION: INT_T ID '=' ID .
+
+    $default  reduce using rule 31 (INT_ASSIGNATION)
+
+
+state 72
+
+   32 INT_ASSIGNATION: INT_T ID '=' LENGTH_FUNC .
+
+    $default  reduce using rule 32 (INT_ASSIGNATION)
+
+
+state 73
+
+   25 NOTE_VAL: ID '[' NUM ']' .
+
+    $default  reduce using rule 25 (NOTE_VAL)
+
+
+state 74
+
+   26 NOTE_VAL: ID '[' ID ']' .
+
+    $default  reduce using rule 26 (NOTE_VAL)
+
+
+state 75
+
+    6 WHILE_LOOP: WHILE '(' CONDITION ')' . OPEN_BRACKET BODY CLOSE_BRACKET
+
+    '{'  shift, and go to state 82
+
+    OPEN_BRACKET  go to state 83
+
+
+state 76
+
+    8 PLAY_FUNC: PLAY NOTE_VAL DURING NUM .
+
+    $default  reduce using rule 8 (PLAY_FUNC)
+
+
+state 77
+
+   10 LENGTH_FUNC: LENGTH '(' ID ')' .
+
+    $default  reduce using rule 10 (LENGTH_FUNC)
+
+
+state 78
+
+   34 NOTE_LIST: NOTE . ',' NOTE_LIST
+   35          | NOTE .
+
+    ','  shift, and go to state 84
+
+    $default  reduce using rule 35 (NOTE_LIST)
+
+
+state 79
+
+   33 NOTE_ARRAY: '[' NOTE_LIST . ']'
+
+    ']'  shift, and go to state 85
+
+
+state 80
+
+    9 LENGTH_FUNC: LENGTH '(' NOTE_ARRAY ')' .
+
+    $default  reduce using rule 9 (LENGTH_FUNC)
+
+
+state 81
+
+   22 ASSIGNATION: NOTE_T '[' ']' ID '=' . NOTE_ARRAY
+
+    '['  shift, and go to state 64
+
+    NOTE_ARRAY  go to state 86
+
+
+state 82
+
+    4 OPEN_BRACKET: '{' .
+
+    $default  reduce using rule 4 (OPEN_BRACKET)
+
+
+state 83
+
+    6 WHILE_LOOP: WHILE '(' CONDITION ')' OPEN_BRACKET . BODY CLOSE_BRACKET
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 50 (EMPTY_LINE)
+
+    WHILE_LOOP        go to state 87
+    BODY              go to state 88
+    PLAY_FUNC         go to state 89
+    LENGTH_FUNC       go to state 90
+    EXPRESION         go to state 91
+    CONDITION         go to state 92
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    BODY_LINE         go to state 93
+    EMPTY_LINE        go to state 94
+
+
+state 84
+
+   34 NOTE_LIST: NOTE ',' . NOTE_LIST
+
+    NOTE  shift, and go to state 78
+
+    NOTE_LIST  go to state 95
+
+
+state 85
+
+   33 NOTE_ARRAY: '[' NOTE_LIST ']' .
+
+    $default  reduce using rule 33 (NOTE_ARRAY)
+
+
+state 86
+
+   22 ASSIGNATION: NOTE_T '[' ']' ID '=' NOTE_ARRAY .
+
+    $default  reduce using rule 22 (ASSIGNATION)
+
+
+state 87
+
+   37 BODY_LINE: WHILE_LOOP . BODY_LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 50 (EMPTY_LINE)
+
+    WHILE_LOOP        go to state 87
+    PLAY_FUNC         go to state 89
+    LENGTH_FUNC       go to state 90
+    EXPRESION         go to state 91
+    CONDITION         go to state 92
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    BODY_LINE         go to state 96
+    EMPTY_LINE        go to state 94
+
+
+state 88
+
+    6 WHILE_LOOP: WHILE '(' CONDITION ')' OPEN_BRACKET BODY . CLOSE_BRACKET
+
+    '}'  shift, and go to state 97
+
+    CLOSE_BRACKET  go to state 98
+
+
+state 89
+
+   38 BODY_LINE: PLAY_FUNC . BODY_LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 50 (EMPTY_LINE)
+
+    WHILE_LOOP        go to state 87
+    PLAY_FUNC         go to state 89
+    LENGTH_FUNC       go to state 90
+    EXPRESION         go to state 91
+    CONDITION         go to state 92
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    BODY_LINE         go to state 99
+    EMPTY_LINE        go to state 94
+
+
+state 90
+
+   15 EXPRESION: LENGTH_FUNC .
+   39 BODY_LINE: LENGTH_FUNC . BODY_LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 15 (EXPRESION)]
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 15 (EXPRESION)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 15 (EXPRESION)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 15 (EXPRESION)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 15 (EXPRESION)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 15 (EXPRESION)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 15 (EXPRESION)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 15 (EXPRESION)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    '}'       reduce using rule 15 (EXPRESION)
+    '}'       [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 15 (EXPRESION)
+
+    WHILE_LOOP        go to state 87
+    PLAY_FUNC         go to state 89
+    LENGTH_FUNC       go to state 90
+    EXPRESION         go to state 91
+    CONDITION         go to state 92
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    BODY_LINE         go to state 100
+    EMPTY_LINE        go to state 94
+
+
+state 91
+
+   36 BODY_LINE: EXPRESION . BODY_LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 50 (EMPTY_LINE)
+
+    WHILE_LOOP        go to state 87
+    PLAY_FUNC         go to state 89
+    LENGTH_FUNC       go to state 90
+    EXPRESION         go to state 91
+    CONDITION         go to state 92
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    BODY_LINE         go to state 101
+    EMPTY_LINE        go to state 94
+
+
+state 92
+
+   12 EXPRESION: CONDITION .
+   40 BODY_LINE: CONDITION . BODY_LINE
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 12 (EXPRESION)]
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 12 (EXPRESION)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 12 (EXPRESION)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 12 (EXPRESION)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 12 (EXPRESION)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 12 (EXPRESION)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 12 (EXPRESION)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 12 (EXPRESION)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    '}'       reduce using rule 12 (EXPRESION)
+    '}'       [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 12 (EXPRESION)
+
+    WHILE_LOOP        go to state 87
+    PLAY_FUNC         go to state 89
+    LENGTH_FUNC       go to state 90
+    EXPRESION         go to state 91
+    CONDITION         go to state 92
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    BODY_LINE         go to state 102
+    EMPTY_LINE        go to state 94
+
+
+state 93
+
+    7 BODY: BODY_LINE .
+
+    $default  reduce using rule 7 (BODY)
+
+
+state 94
+
+   41 BODY_LINE: EMPTY_LINE . BODY_LINE
+   42          | EMPTY_LINE .
+
+    NUM     shift, and go to state 9
+    NOTE_T  shift, and go to state 10
+    NOTE    shift, and go to state 11
+    INT_T   shift, and go to state 12
+    ID      shift, and go to state 13
+    WHILE   shift, and go to state 14
+    PLAY    shift, and go to state 15
+    LENGTH  shift, and go to state 16
+
+    NUM       [reduce using rule 50 (EMPTY_LINE)]
+    NOTE_T    [reduce using rule 50 (EMPTY_LINE)]
+    NOTE      [reduce using rule 50 (EMPTY_LINE)]
+    INT_T     [reduce using rule 50 (EMPTY_LINE)]
+    ID        [reduce using rule 50 (EMPTY_LINE)]
+    WHILE     [reduce using rule 50 (EMPTY_LINE)]
+    PLAY      [reduce using rule 50 (EMPTY_LINE)]
+    LENGTH    [reduce using rule 50 (EMPTY_LINE)]
+    '}'       reduce using rule 42 (BODY_LINE)
+    '}'       [reduce using rule 50 (EMPTY_LINE)]
+    $default  reduce using rule 42 (BODY_LINE)
+
+    WHILE_LOOP        go to state 87
+    PLAY_FUNC         go to state 89
+    LENGTH_FUNC       go to state 90
+    EXPRESION         go to state 91
+    CONDITION         go to state 92
+    ASSIGNATION       go to state 22
+    NOTE_ASSIGNATION  go to state 23
+    NOTE_VAL          go to state 24
+    INT_ASSIGNATION   go to state 25
+    BODY_LINE         go to state 103
+    EMPTY_LINE        go to state 94
+
+
+state 95
+
+   34 NOTE_LIST: NOTE ',' NOTE_LIST .
+
+    $default  reduce using rule 34 (NOTE_LIST)
+
+
+state 96
+
+   37 BODY_LINE: WHILE_LOOP BODY_LINE .
+
+    $default  reduce using rule 37 (BODY_LINE)
+
+
+state 97
+
+    5 CLOSE_BRACKET: '}' .
+
+    $default  reduce using rule 5 (CLOSE_BRACKET)
+
+
+state 98
+
+    6 WHILE_LOOP: WHILE '(' CONDITION ')' OPEN_BRACKET BODY CLOSE_BRACKET .
+
+    $default  reduce using rule 6 (WHILE_LOOP)
+
+
+state 99
+
+   38 BODY_LINE: PLAY_FUNC BODY_LINE .
+
+    $default  reduce using rule 38 (BODY_LINE)
+
+
+state 100
+
+   39 BODY_LINE: LENGTH_FUNC BODY_LINE .
+
+    $default  reduce using rule 39 (BODY_LINE)
+
+
+state 101
+
+   36 BODY_LINE: EXPRESION BODY_LINE .
+
+    $default  reduce using rule 36 (BODY_LINE)
+
+
+state 102
+
+   40 BODY_LINE: CONDITION BODY_LINE .
+
+    $default  reduce using rule 40 (BODY_LINE)
+
+
+state 103
+
+   41 BODY_LINE: EMPTY_LINE BODY_LINE .
+
+    $default  reduce using rule 41 (BODY_LINE)

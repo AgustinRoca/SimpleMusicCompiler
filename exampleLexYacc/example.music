@@ -1,0 +1,10 @@
+bpm 180
+volume 1
+note[] notes = [A4, A5, B5]
+int i = length( notes )
+while (i > 0) {
+    play notes[i] during 60 // 60 ticks
+    play notes[i]+A4 during 60 // 60 ticks
+    play notes[i]+8 during 60 // 60 ticks
+    i--
+}
