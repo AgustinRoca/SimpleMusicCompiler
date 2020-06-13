@@ -1,5 +1,5 @@
 %{
-    #include "example.tab.h"
+    #include "musicCompiler.tab.h"
 %}
 
 alpha [A-Za-z]
