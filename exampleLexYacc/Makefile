@@ -1,11 +1,48 @@
-all: compile
+# Commands
+CC = gcc
+YACC = bison
+LEX = flex
+
+# Files
+NAME = example
+FILE_Y = $(NAME).y
+FILE_L = $(NAME).l
+LEX_OUT_FILE = lex.yy
+YACC_OUT_FILE = example.tab
+OUTPUT = compiler
+OUTPUT_FILES_C = $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c
+OUTPUT_FILES_O = $(LEX_OUT_FILE).o $(YACC_OUT_FILE).o
+OUTPUT_FILES = $(OUTPUT_FILES_C) $(OUTPUT_FILES_O) $(OUTPUT)
+
+# Flags
+YACC_FLAGS = -d
+LEX_FLAGS =
+YACC_DEBUG = --verbose
+LEX_DEBUG = -d
+CC_FLAGS = -ly
+
+
+all: $(OUTPUT)
 	
-compile:
-	bison -d example.y
-	flex example.l
-	gcc -o compiler lex.yy.c example.tab.c -ly
+$(OUTPUT): $(LEX_OUT_FILE).o $(YACC_OUT_FILE).o
+	$(CC) $(CC_FLAGS) -o $(OUTPUT) $(LEX_OUT_FILE).o $(YACC_OUT_FILE).o 
 
 debug:
-	bison -d example.y --debug --verbose
-	flex -d example.l
-	gcc -o compiler lex.yy.c example.tab.c -ly
+	$(YACC) $(YACC_FLAGS) $(YACC_DEBUG) $(FILE_Y)
+	$(LEX) $(LEX_FLAGS) $(LEX_DEBUG) $(FILE_L)
+	$(CC) $(CC_FLAGS) -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c
+
+$(YACC_OUT_FILE).o: $(YACC_OUT_FILE).c
+	$(CC) -c $(YACC_OUT_FILE).c
+
+$(LEX_OUT_FILE).o: $(LEX_OUT_FILE).c
+	$(CC) -c $(LEX_OUT_FILE).c
+
+$(YACC_OUT_FILE).c:
+	$(YACC) $(YACC_FLAGS) $(FILE_Y)
+
+$(LEX_OUT_FILE).c: $(YACC_OUT_FILE).c
+	$(LEX) $(LEX_FLAGS) $(FILE_L)
+
+clean:
+	rm -f $(OUTPUT_FILES)
