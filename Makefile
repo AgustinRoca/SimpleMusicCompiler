@@ -18,7 +18,7 @@ OUTPUT_FILES = $(OUTPUT_FILES_C) $(OUTPUT_FILES_H) $(OUTPUT_FILES_O) $(OUTPUT)
 # Flags
 YACC_FLAGS = -d
 LEX_FLAGS =
-YACC_DEBUG = --verbose
+YACC_DEBUG = --verbose --debug
 LEX_DEBUG = -d
 CC_FLAGS = -ly
 
