@@ -13,7 +13,8 @@
 alpha [A-Za-z]
 digit [0-9]
 double -?[0-9]+\.[0-9]+
-note  [A-G][1-8]
+note  [A-G]#?[1-8]
+bool_op (<|>)=?|== 
 
 %%
 
@@ -27,18 +28,17 @@ note  [A-G][1-8]
 "during"                            {yylval.string=strdup(yytext); return DURING;}
 "while"                             {yylval.string=strdup(yytext); return WHILE;}
 "length"                            {yylval.string=strdup("len"); return LENGTH;}
-(<|>)=?|==                          {yylval.string=strdup(yytext); return BOOL_OP;}
+{bool_op}                           {yylval.string=strdup(yytext); return BOOL_OP;}
 {digit}+                            {yylval.integer=atoi(yytext); return INTEGER;}
 {double}                            {yylval.decimal=atof(yytext); return DOUBLE;}
-{note}                              {yylval.string=strdup(yytext); return NOTE;}
+{note}                              {yylval.string=malloc((yytext[1]=='#')?14:13); sprintf(yylval.string, "freq(\"%c%s\", %c)", yytext[0], (yytext[1]=='#')?"#":"", (yytext[1]=='#')?yytext[2]:yytext[1]);return NOTE;} /* Importante que este arriba de los IDs! */
 {alpha}({alpha}|{digit}|"_")*       {
-                                        yylval.string=strdup(yytext); 
+                                        yylval.string=strdup(yytext);
                                         if(isInInts(yylval.string)){
                                             return INT_VAR;
                                         }
                                         if(isInDoubles(yylval.string)){
                                             return DOUBLE_VAR;
-                                        
                                         }
                                         if(isInNotes(yylval.string)){
                                             return NOTE_VAR;
@@ -48,12 +48,11 @@ note  [A-G][1-8]
                                         }
                                         if(isInDoubleArrays(yylval.string)){
                                             return DOUBLE_ARRAY_VAR;
-                                        
                                         }
                                         if(isInNoteArrays(yylval.string)){
                                             return NOTE_ARRAY_VAR;
                                         }
-                                        return NEW_ID;
+                                        return NEW_ID; // Si no tiene un tipo antes, falla en el yacc
                                     }
 "//".*                              {/** Comment **/}
 .                                   return yytext[0];
