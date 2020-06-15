@@ -168,12 +168,12 @@ int yywrap()
 
 int main() {
     yydebug=1;
-    FILE * outfile = fopen("out.py", "w");
     char * result; // esta bien que no este inicializada, se inicializa en yyparse
     int error = yyparse(&result);
     if(error){
         return error;
     }
+    FILE * outfile = fopen("out.py", "w");
     fprintf(outfile,"import numpy as np\n"
                     "import simpleaudio as sa\n"
                     "import threading\n"
@@ -227,12 +227,12 @@ int main() {
                     "        final_sound[0:len(sound)] += sound[0:len(sound)]\n"
                     "    final_sound *= 32767 / np.max(np.abs(final_sound))\n"
                     "    final_sound *= volume\n"
-                    "    play_obj = sa.play_buffer(final_sound.astype(np.int16), 2, 2, sample_rate)\n"
+                    "    play_obj = sa.play_buffer(final_sound.astype(np.int16), 1, 2, sample_rate)\n"
                     "    # wait for playback to finish before exiting\n"
                     "    play_obj.wait_done()\n"
                     "    return\n\n%s\n", result);
-    free(result);
     fclose(outfile);
+    free(result);
     freeVars();
     return 0;
 }
