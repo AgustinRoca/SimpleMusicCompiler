@@ -1,5 +1,13 @@
 %{
+    #include <stdlib.h>
     #include "musicCompiler.tab.h"
+
+    uint8_t isInInts(char * s);
+    uint8_t isInDoubles(char * s);
+    uint8_t isInNotes(char * s);
+    uint8_t isInIntArrays(char * s);
+    uint8_t isInDoubleArrays(char * s);
+    uint8_t isInNoteArrays(char * s);
 %}
 
 alpha [A-Za-z]
@@ -23,7 +31,30 @@ note  [A-G][1-8]
 {digit}+                            {yylval.integer=atoi(yytext); return INTEGER;}
 {double}                            {yylval.decimal=atof(yytext); return DOUBLE;}
 {note}                              {yylval.string=strdup(yytext); return NOTE;}
-{alpha}({alpha}|{digit}|"_")*       {yylval.string=strdup(yytext); return ID;}
+{alpha}({alpha}|{digit}|"_")*       {
+                                        yylval.string=strdup(yytext); 
+                                        if(isInInts(yylval.string)){
+                                            return INT_VAR;
+                                        }
+                                        if(isInDoubles(yylval.string)){
+                                            return DOUBLE_VAR;
+                                        
+                                        }
+                                        if(isInNotes(yylval.string)){
+                                            return NOTE_VAR;
+                                        }
+                                        if(isInIntArrays(yylval.string)){
+                                            return INT_ARRAY_VAR;
+                                        }
+                                        if(isInDoubleArrays(yylval.string)){
+                                            return DOUBLE_ARRAY_VAR;
+                                        
+                                        }
+                                        if(isInNoteArrays(yylval.string)){
+                                            return NOTE_ARRAY_VAR;
+                                        }
+                                        return NEW_ID;
+                                    }
 "//".*                              {/** Comment **/}
 .                                   return yytext[0];
 
