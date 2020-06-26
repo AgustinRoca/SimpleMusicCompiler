@@ -7,4 +7,4 @@ compiler
 lex.yy.*
 *.tab.*
 musicCompiler.output
-example.music
+*.music
