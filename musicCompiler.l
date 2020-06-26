@@ -33,8 +33,8 @@ bool_op (<|>)=?|==
 {bool_op}                           {yylval.string=strdup(yytext); return BOOL_OP;}
 {digit}+                            {yylval.integer=atoi(yytext); return INTEGER;}
 {double}                            {yylval.decimal=atof(yytext); return DOUBLE;}
-"S"                                 {yylval.string=strdup("0"); return NOTE;} /* Importante que este arriba de los IDs! */
-{note}                              {yylval.string=malloc(20); sprintf(yylval.string, "%f", freq(yytext));return NOTE;} /* Importante que este arriba de los IDs! */
+"S"                                 {yylval.decimal=0; return NOTE;} /* Importante que este arriba de los IDs! */
+{note}                              {yylval.decimal=freq(yytext); return NOTE;} /* Importante que este arriba de los IDs! */
 {alpha}({alpha}|{digit}|"_")*       {
                                         yylval.string=strdup(yytext);
                                         if(isInInts(yylval.string)){

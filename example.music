@@ -1,5 +1,5 @@
 bpm 180;
-volume 1;
+volume 1/8.0;
 note[] notes = [A4, A5, B5];
 int i = 0;
 int j=0;

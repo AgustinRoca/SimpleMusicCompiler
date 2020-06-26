@@ -2,11 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define CHUNK 10
 
 int yylex();
 void yyerror(char ** result, const char *s);
+double semitones(int qty);
 void indent(char * s, int n);
 void addToInts(char * s);
 void addToDoubles(char * s);
@@ -163,10 +165,11 @@ DOUBLE_STRING       : DOUBLE_VAL {$<string>$ = malloc(20 + 1); sprintf($<string>
                     | INT_STRING '*' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s * %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | INT_STRING '/' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s / %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
 
-NOTE_VAL            : NOTE {$<string>$ = malloc(strlen($<string>1) + 3); sprintf($<string>$, "[%s]",$<string>1); free($<string>1)}
+NOTE_VAL            : NOTE {$<string>$ = malloc(20 + 3); sprintf($<string>$, "[%f]",$<decimal>1)}
                     | NOTE_ARRAY_VAR '[' INT_STRING ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3);sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | NOTE_ARRAY_VAR '[' INT_ARRAY_VAR ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3); sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | NOTE_VAL '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 30); sprintf($<string>$, "[A1 * semitones(%s) for A1 in %s]", $<string>3, $<string>1); free($<string>1); free($<string>3)}
+                    | NOTE_VAL '+' INT_VAL {$<string>$ = malloc(strlen($<string>1) + 20 + 19); sprintf($<string>$, "[A1 * %f for A1 in %s]", semitones($<integer>3), $<string>1); free($<string>1)}
                     | NOTE_VAL '+' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | NOTE_VAL '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | NOTE_VAL '-' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
@@ -203,8 +206,6 @@ int main() {
     FILE * outfile = fopen("out.py", "w");
     fprintf(outfile,"import numpy as np\n"
                     "import simpleaudio as sa\n"
-                    "import threading\n"
-                    "import time\n"
                     "\n"
                     "def semitones(qty):\n"
                     "    return 2 ** (qty/12)\n"
@@ -378,4 +379,8 @@ uint8_t isInNoteArrays(char * s){
         }
     }
     return 0;
+}
+
+double semitones(int qty){
+    return pow(2, qty/12.0);
 }
