@@ -53,7 +53,7 @@ VOL                 : VOLUME NUMBER ';' {$<string>$ = malloc(10 + strlen($<strin
 NUMBER              : INT_STRING {$<string>$ = $<string>1}
                     | DOUBLE_STRING {$<string>$ = $<string>1}
 
-PLAY_FUNC           : PLAY NOTE_VAL DURING INT_STRING {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4)}
+PLAY_FUNC           : PLAY NOTE_VAL DURING NUMBER {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4)}
 
 LENGTH_FUNC         : LENGTH '(' ARRAY ')' {$<string>$ = malloc(strlen($<string>3) + 6);sprintf($<string>$, "len(%s)", $<string>3); free($<string>1); free($<string>3)}
                     | LENGTH '(' ARRAY_VAR ')' {$<string>$ = malloc(strlen($<string>3) + 6); sprintf($<string>$, "len(%s)", $<string>3);  free($<string>1); free($<string>3)}
