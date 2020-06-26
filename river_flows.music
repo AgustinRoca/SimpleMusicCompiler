@@ -1,0 +1,281 @@
+bpm 72;
+volume 1/8.0;
+
+note[] notes_left =  [F#3, C#4, F#4, F#4, D3, A3, E4];
+note[] notes_right = [A5,  G#5, A5,  G#5, A5, E5, A5];
+
+int i=0;
+while(i < length(notes_right)){
+    play notes_right[i] + notes_left[i] during 0.5;
+    i++;
+}
+
+play E4 + D5 during 2.5;
+
+play E4 + A4 during 0.25;
+play E4 + C#5 during 0.25;
+
+i=0;
+while(i < length(notes_right)){
+    play notes_right[i] + notes_left[i] during 0.5;
+    i++;
+}
+
+play E4 + D5 during 2.5;
+
+play E4 + A4 during 0.25;
+play E4 + C#5 during 0.25;
+
+play A5 + F#3 during 0.5;
+
+note[] notes_left_2 =  [C#4, C#4, F#4, F#4, F#4, F#4, D3, D3, A3, A3, E4, E4, D3];
+note[] notes_right_2 = [G#5, A5,  A5,  A4,  G#5, A5,  A5, A4, E5, A5, A5, A4, D5];
+
+i=0;
+while(i < length(notes_right_2)){
+    play notes_right_2[i] + notes_left_2[i] during 0.25;
+    i++;
+}
+
+play D3 + A4 during 1/8.0;
+play D3 + B4 during 1/8.0;
+
+note[] notes_left_3 =  [A2,  E3, C#4,     C#4, E3,     B3,     E4];
+note[] notes_right_3 = [C#5, D5, A4 + E5, C#5, G#4+B4, G#4+B4, G#4+B4];
+
+i=0;
+while(i < length(notes_right_3)){
+    play notes_right_3[i] + notes_left_3[i] during 0.5;
+    i++;
+}
+
+note[] notes_left_4 =  [E4, E4];
+note[] notes_right_4 = [A4, G#4];
+
+i=0;
+while(i < length(notes_right_4)){
+    play notes_right_4[i] + notes_left_4[i] during 0.25;
+    i++;
+}
+
+play F#3 + A4 during 0.5;
+play C#4 + A4 during 0.5;
+
+note[] notes_left_5 =  [F#4, F#4, F#4, F#4];
+note[] notes_right_5 = [A4,  E4,  A4,  B4];
+
+i=0;
+while(i < length(notes_right_5)){
+    play notes_right_5[i] + notes_left_5[i] during 0.25;
+    i++;
+}
+note[] notes_left_6 =  [D3, A3, E4];
+note[] notes_right_6 = [C#5, C#5, C#5];
+
+i=0;
+while(i < length(notes_right_6)){
+    play notes_right_6[i] + notes_left_6[i] during 0.5;
+    i++;
+}
+
+play C#5 + E4 during 0.25;
+play D5 + E4 during 0.25;
+
+note[] notes_left_7 =  [A2, E3, C#4];
+note[] notes_right_7 = [E5, E5, E5];
+
+i=0;
+while(i < length(notes_right_7)){
+    play notes_right_7[i] + notes_left_7[i] during 0.5;
+    i++;
+}
+
+play D5 + C#4 during 0.25;
+play C#5 + C#4 during 0.25;
+
+note[] notes_left_8 =  [E3, B3, G#4];
+note[] notes_right_8 = [B4, B4, B4];
+
+i=0;
+while(i < length(notes_right_8)){
+    play notes_right_8[i] + notes_left_8[i] during 0.5;
+    i++;
+}
+
+note[] notes_left_9 =  [G#4, G#4];
+note[] notes_right_9 = [A4,  C#5];
+
+i=0;
+while(i < length(notes_right_9)){
+    play notes_right_9[i] + notes_left_9[i] during 0.25;
+    i++;
+}
+
+play F#3 + A5 during 0.5;
+
+note[] notes_left_10 =  [C#4, C#4, F#4, F#4, F#4, F#4, D3, D3, A3, A3, E4, E4, D3];
+note[] notes_right_10 = [G#5, A5,  A5,  A4,  G#5, A5,  A5, A4, E5, A5, A5, A4, D4];
+
+i=0;
+while(i < length(notes_right_10)){
+    play notes_right_10[i] + notes_left_10[i] during 0.25;
+    i++;
+}
+
+play D3 + A4 during 0.125;
+play D3 + B4 during 0.125;
+
+note[] notes_left_11 =  [A2,  E3, D4, A2,  E3, B3];
+note[] notes_right_11 = [C#5, D5, E5, C#6, B5, E5];
+
+i=0;
+while(i < length(notes_right_11)){
+    play notes_right_11[i] + notes_left_11[i] during 0.5;
+    i++;
+}
+
+note[] notes_left_12 =  [E4,      E4,  E4];
+note[] notes_right_12 = [E5 + B5, C#6, B5];
+
+i=0;
+while(i < length(notes_right_12)){
+    play notes_right_12[i] + notes_left_12[i] during 0.125;
+    i++;
+}
+
+play E4 + A5 during 0.25;
+play E4 + G#5 during 0.25;
+
+note[] notes_left_13 =  [F#3,     C#4,     F#4];
+note[] notes_right_13 = [E5 + A5, E5 + A5, E5 + A5];
+
+i=0;
+while(i < length(notes_right_13)){
+    play notes_right_13[i] + notes_left_13[i] during 0.5;
+    i++;
+}
+
+play F#4 + A4 during 0.25;
+play F#4 + B4 during 0.25;
+
+note[] notes_left_14 =  [D3,  A3, E4];
+note[] notes_right_14 = [C#5, E4, A4];
+
+i=0;
+while(i < length(notes_right_14)){
+    play notes_right_14[i] + notes_left_14[i] during 0.5;
+    i++;
+}
+
+play E4 + C#5 during 0.25;
+play E4 + D5 during 0.25;
+
+note[] notes_left_15 =  [A2, E3, C#4];
+note[] notes_right_15 = [E5, E4, C#5];
+
+i=0;
+while(i < length(notes_right_15)){
+    play notes_right_15[i] + notes_left_15[i] during 0.5;
+    i++;
+}
+
+play C#4 + D5 during 0.25;
+play C#4 + C#5 during 0.25;
+
+play E3 + B4 during 0.5;
+play B3 + B4 during 0.5;
+
+note[] notes_left_16 =  [E4, E4, E4, E4,  F#3, F#3, C#4, C#4, F#4, F#4, F#3, F#3, D3, D3, A3, A3, E4, E4, D3, D3,  A2, A2, E3,  E3, C#4, C#4, A2, A2];
+note[] notes_right_16 = [A5, B5, A5, G#5, A5,  A4,  E5,  A4,  A5,  B5,  A5,  G#5, A5, A4, E5, A4, A5, B5, A5, G#5, A5, B5, C#6, D6, E6,  C#6, B5, A5];
+
+i=0;
+while(i < length(notes_right_16)){
+    play notes_right_16[i] + notes_left_16[i] during 0.25;
+    i++;
+}
+
+play E3 + G#5 during 0.5;
+play B3 + B4 during 0.5;
+
+note[] notes_left_17 =  [E4, E4, E3, E3,  F#3, F#3, C#4, C#4, F#4, F#4, F#3, F#3, D3, D3, A3, A3, E4, E4, D3, D3,  A2, A2, E3,  E3, C#4, C#4, A2, A2];
+note[] notes_right_17 = [A5, B5, A5, G#5, A5,  A4,  E5,  A4,  A5,  B5,  A5,  G#5, A5, A4, E5, A4, A5, B5, A5, G#5, A5, B5, C#6, D6, E6,  C#6, B5, A5];
+
+i=0;
+while(i < length(notes_right_17)){
+    play notes_right_17[i] + notes_left_17[i] during 0.25;
+    i++;
+}
+
+play E3 + G#5 during 0.5;
+play B3 + B4 during 0.5;
+
+play E4 + A5 during 0.25;
+play E4 + A5 during 0.125;
+play E4 + B5 during 0.125;
+play E3 + A5 during 0.25;
+play E3 + G#5 during 0.25;
+
+note[] notes_left_18 =  [E3, E3,  F#2, F#2, C#3, C#3, G#2];
+note[] notes_right_18 = [A5, G#5, A5,  A4,  E5,  A4,  A5];
+
+i=0;
+while(i < length(notes_right_18)){
+    play notes_right_18[i] + notes_left_18[i] during 0.25;
+    i++;
+}
+
+play G#2 + A5 during 0.125;
+play G#2 + B5 during 0.125;
+
+note[] notes_left_19 =  [F#2, F#2, D3, D3, A3, A3, E4];
+note[] notes_right_19 = [A5,  G#5, A5, A4, E5, A4, A5];
+
+i=0;
+while(i < length(notes_right_19)){
+    play notes_right_19[i] + notes_left_19[i] during 0.25;
+    i++;
+}
+
+play E4 + A5 during 0.125;
+play E4 + B5 during 0.125;
+
+note[] notes_left_20 =  [D3, D3,  A2, A2, E3,  E3, C#4, C#4, A2, A2];
+note[] notes_right_20 = [A5, G#5, A5, B5, C#6, D6, E6,  C#6, B5, A5];
+
+i=0;
+while(i < length(notes_right_20)){
+    play notes_right_20[i] + notes_left_20[i] during 0.25;
+    i++;
+}
+
+play E2 + G#5 during 0.5;
+play E2 + B4 during 0.5;
+play G#3 + A5 during 0.25;
+play G#3 + A5 during 0.125;
+play G#3 + B5 during 0.125;
+
+note[] notes_left_21 =  [E2, E2,  F#2, F#2, C#3, C#3, F#3];
+note[] notes_right_21 = [A5, G#5, A5,  A4,  E4,  A4, A5];
+
+i=0;
+while(i < length(notes_right_21)){
+    play notes_right_21[i] + notes_left_21[i] during 0.25;
+    i++;
+}
+
+play F#3 + A5 during 0.125;
+play F#3 + B5 during 0.125;
+
+note[] notes_left_22 =  [F#2, F#2, D3, D3, A3, A3, E4, E4, D3, D3,  A2, A2, E3,  E3, C#4, C#4, A2, A2];
+note[] notes_right_22 = [A5,  G#5, A5, A4, E4, A4, A5, B5, A5, G#5, A5, B5, C#6, D6, E6,  C#6, B5, A5];
+
+i=0;
+while(i < length(notes_right_22)){
+    play notes_right_22[i] + notes_left_22[i] during 0.25;
+    i++;
+}
+
+play E2 + G#5 during 1;
+play B2 + B4 during 1.5;
+play G#3 + G#4 during 1.5;
+play G#3 + E4 during 3;

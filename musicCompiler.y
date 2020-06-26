@@ -2,11 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define CHUNK 10
 
 int yylex();
 void yyerror(char ** result, const char *s);
+double semitones(int qty);
 void indent(char * s, int n);
 void addToInts(char * s);
 void addToDoubles(char * s);
@@ -53,7 +55,7 @@ VOL                 : VOLUME NUMBER ';' {$<string>$ = malloc(10 + strlen($<strin
 NUMBER              : INT_STRING {$<string>$ = $<string>1}
                     | DOUBLE_STRING {$<string>$ = $<string>1}
 
-PLAY_FUNC           : PLAY NOTE_VAL DURING INT_STRING {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4)}
+PLAY_FUNC           : PLAY NOTE_VAL DURING NUMBER {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4)}
 
 LENGTH_FUNC         : LENGTH '(' ARRAY ')' {$<string>$ = malloc(strlen($<string>3) + 6);sprintf($<string>$, "len(%s)", $<string>3); free($<string>1); free($<string>3)}
                     | LENGTH '(' ARRAY_VAR ')' {$<string>$ = malloc(strlen($<string>3) + 6); sprintf($<string>$, "len(%s)", $<string>3);  free($<string>1); free($<string>3)}
@@ -163,10 +165,11 @@ DOUBLE_STRING       : DOUBLE_VAL {$<string>$ = malloc(20 + 1); sprintf($<string>
                     | INT_STRING '*' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s * %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | INT_STRING '/' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s / %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
 
-NOTE_VAL            : NOTE {$<string>$ = malloc(strlen($<string>1) + 3); sprintf($<string>$, "[%s]",$<string>1); free($<string>1)}
+NOTE_VAL            : NOTE {$<string>$ = malloc(20 + 3); sprintf($<string>$, "[%f]",$<decimal>1)}
                     | NOTE_ARRAY_VAR '[' INT_STRING ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3);sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | NOTE_ARRAY_VAR '[' INT_ARRAY_VAR ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3); sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | NOTE_VAL '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 30); sprintf($<string>$, "[A1 * semitones(%s) for A1 in %s]", $<string>3, $<string>1); free($<string>1); free($<string>3)}
+                    | NOTE_VAL '+' INT_VAL {$<string>$ = malloc(strlen($<string>1) + 20 + 19); sprintf($<string>$, "[A1 * %f for A1 in %s]", semitones($<integer>3), $<string>1); free($<string>1)}
                     | NOTE_VAL '+' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | NOTE_VAL '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
                     | NOTE_VAL '-' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
@@ -203,31 +206,6 @@ int main() {
     FILE * outfile = fopen("out.py", "w");
     fprintf(outfile,"import numpy as np\n"
                     "import simpleaudio as sa\n"
-                    "import threading\n"
-                    "import time\n"
-                    "\n"
-                    "# calculate note frequencies\n"
-                    "A4_freq = 440 # (Hz)\n"
-                    "\n"
-                    "def freq4(note_name):\n"
-                    "    freqs = {\n"
-                    "        \"A\"	: 0,\n"
-                    "        \"A#\": 1,\n"
-                    "        \"B\"	: 2,\n"
-                    "        \"C\"	: -9,\n"
-                    "        \"C#\": -8,\n"
-                    "        \"D\"	: -7,\n"
-                    "        \"D#\": -6,\n"
-                    "        \"E\" : -5,\n"
-                    "        \"F\" : -4,\n"
-                    "        \"F#\": -3,\n"
-                    "        \"G\" : -2,\n"
-                    "        \"G#\": -1\n"
-                    "    }\n"
-                    "    return A4_freq * 2 ** (freqs.get(note_name)/12)\n"
-                    "\n"
-                    "def freq(note_name, octet):\n"
-                    "    return freq4(note_name) * 2 ** (octet-4)\n"
                     "\n"
                     "def semitones(qty):\n"
                     "    return 2 ** (qty/12)\n"
@@ -238,12 +216,6 @@ int main() {
                     "def play_note(freq, duration):\n"
                     "    t = np.linspace(0, duration, int(duration * sample_rate) , False) # lista de T*sample_rate numeros en el intervalo [0 a T)\n"
                     "    return np.sin(freq * t * 2 * np.pi)\n"
-                    "\n"
-                    "def chord(freq1, freq2, freq3, freq4=0):\n"
-                    "    if(freq4 == 0):\n"
-                    "        return [freq1, freq2, freq3]\n"
-                    "    else:\n"
-                    "        return [freq1, freq2, freq3, freq4]\n"
                     "\n"
                     "def add_sound(list, notes, duration, volume):\n"
                     "    return np.concatenate((list,sound(notes, duration, volume))) \n"
@@ -407,4 +379,8 @@ uint8_t isInNoteArrays(char * s){
         }
     }
     return 0;
+}
+
+double semitones(int qty){
+    return pow(2, qty/12.0);
 }
