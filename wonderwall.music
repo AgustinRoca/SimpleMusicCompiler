@@ -45,8 +45,11 @@ while(i<length(guitar_strings)){
 }
 
 note[] main = [mim, sol, re, la7];
+note[] piano_notes =         [S,    C5,     B4,     A4,     B4,     A4,     B4,     A4,     B4,     B4,     A4,     B4,     A4,     B4,     A4,     B4,     C#5,    A4,     S,      C5,     B4,     A4,     B4,     A4,     B4,     B4,     B4,     B4,     A4,     B4,     B4,     B4,     A4,     B4,     C#5,    A4,     S,      S];
+double[] piano_notes_times = [0.25, 0.5,    1.0,    0.25,   0.25,   0.25,   0.25,   0.25,   0.5,    0.25,   0.25,   0.25,   0.25,   0.25,   0.25,   0.5,    0.25,   2.0,    2.25,   0.5,    0.5,    0.25,   0.25,   0.25,   0.5,    0.25,   0.25,   0.25,   0.25,   0.25,   0.25,   0.25,   0.25,   0.5,    0.25,   2.0,    0.5,    40.0];
+
 i=0;
-while(i<4){
+while(i<7){
     play main[0] during 0.5 as guitar;
     play main[0] during 0.5 as guitar;
     play main[1] during 0.5 as guitar;
@@ -55,6 +58,7 @@ while(i<4){
     play main[1] during 0.25 as guitar;
     play main[1] during 0.25 as guitar;
     play main[1] during 0.5 as guitar;
+    play main[1] during 0.25 as guitar;
     play main[2] during 0.5 as guitar;
     play main[2] during 0.25 as guitar;
     play main[2] during 0.25 as guitar;
@@ -71,4 +75,10 @@ while(i<4){
     play main[0] during 0.25 as guitar;
     play main[0] during 0.25 as guitar;
     i++;
+}
+
+int j=0;
+while(j<length(piano_notes)){
+//    play piano_notes[j] during piano_notes_times[j] in thread_1;
+    j++;
 }

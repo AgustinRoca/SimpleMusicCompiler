@@ -17,7 +17,12 @@ void addToNotes(char * s);
 void addToIntArrays(char * s);
 void addToDoubleArrays(char * s);
 void addToNoteArrays(char * s);
+void addThread(char * s);
+int isNewThread(char * s);
 void freeVars(void);
+char * init_threads();
+char * thread_list();
+void freeThreads();
 
 int yydebug=1;
 int tab_qty=0;
@@ -34,6 +39,9 @@ char ** double_array_vars = NULL;
 size_t double_array_vars_length = 0;
 char ** note_array_vars = NULL;
 size_t note_array_vars_length = 0;
+
+char ** threads = NULL;
+size_t threads_length = 0;
 %}
 
 %union
@@ -43,7 +51,7 @@ size_t note_array_vars_length = 0;
     char *string;
 }
 
-%token BPM INTEGER DOUBLE BOOL_OP VOLUME NOTE_T NOTE INT_T DOUBLE_T NEW_ID WHILE PLAY DURING LENGTH INT_VAR DOUBLE_VAR NOTE_VAR INT_ARRAY_VAR DOUBLE_ARRAY_VAR NOTE_ARRAY_VAR AS GUITAR PIANO
+%token BPM INTEGER DOUBLE BOOL_OP VOLUME NOTE_T NOTE INT_T DOUBLE_T NEW_ID WHILE PLAY DURING LENGTH INT_VAR DOUBLE_VAR NOTE_VAR INT_ARRAY_VAR DOUBLE_ARRAY_VAR NOTE_ARRAY_VAR AS GUITAR PIANO IN THREAD
 %parse-param {char **result}
 
 %%
@@ -56,9 +64,12 @@ VOL                 : VOLUME NUMBER ';' {$<string>$ = malloc(10 + strlen($<strin
 NUMBER              : INT_STRING {$<string>$ = $<string>1;}
                     | DOUBLE_STRING {$<string>$ = $<string>1;}
 
-PLAY_FUNC           : PLAY NOTE_VAL DURING NUMBER {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4);}
-                    | PLAY NOTE_VAL DURING NUMBER AS PIANO {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4); free($<string>5); free($<string>6);}
-                    | PLAY NOTE_VAL DURING NUMBER AS GUITAR {$<string>$ = malloc(strlen($<string>2) + 48 + 6 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume, True)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4); free($<string>5); free($<string>6);}
+PLAY_FUNC           : PLAY NOTE_VAL DURING NUMBER {$<string>$ = malloc(strlen($<string>2) + 74 + strlen($<string>4)); sprintf($<string>$, "thread_0 = np.concatenate((thread_0, sound(%s, length_of_beat * %s, volume)))", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4);}
+                    | PLAY NOTE_VAL DURING NUMBER AS PIANO {$<string>$ = malloc(strlen($<string>2) + 74 + strlen($<string>4)); sprintf($<string>$, "thread_0 = np.concatenate((thread_0,sound(%s, length_of_beat * %s, volume)))", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4); free($<string>5); free($<string>6);}
+                    | PLAY NOTE_VAL DURING NUMBER AS GUITAR {$<string>$ = malloc(strlen($<string>2) + 74 + 6 + strlen($<string>4)); sprintf($<string>$, "thread_0 = np.concatenate((thread_0,sound(%s, length_of_beat * %s, volume, True)))", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4); free($<string>5); free($<string>6);}
+                    | PLAY NOTE_VAL DURING NUMBER IN THREAD {addThread($<string>6); $<string>$ = malloc(2* strlen($<string>6) + strlen($<string>2) + 58 + strlen($<string>4)); sprintf($<string>$, "%s = np.concatenate((%s, sound(%s, length_of_beat * %s, volume)))", $<string>6, $<string>6, $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4); free($<string>5); free($<string>6);}
+                    | PLAY NOTE_VAL DURING NUMBER AS PIANO IN THREAD {addThread($<string>8); $<string>$ = malloc(2* strlen($<string>8) + strlen($<string>2) + 58 + strlen($<string>4)); sprintf($<string>$, "%s = np.concatenate((%s, sound(%s, length_of_beat * %s, volume)))", $<string>8, $<string>8, $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4); free($<string>5); free($<string>6); free($<string>7); free($<string>8);}
+                    | PLAY NOTE_VAL DURING NUMBER AS GUITAR IN THREAD {addThread($<string>8); $<string>$ = malloc(2* strlen($<string>8) + strlen($<string>2) + 58 + 6 + strlen($<string>4)); sprintf($<string>$, "%s = np.concatenate((%s, sound(%s, length_of_beat * %s, volume, True)))", $<string>8, $<string>8, $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4); free($<string>5); free($<string>6); free($<string>7); free($<string>8);}
 
 LENGTH_FUNC         : LENGTH '(' ARRAY ')' {$<string>$ = malloc(strlen($<string>3) + 6);sprintf($<string>$, "len(%s)", $<string>3); free($<string>1); free($<string>3);}
                     | LENGTH '(' ARRAY_VAR ')' {$<string>$ = malloc(strlen($<string>3) + 6); sprintf($<string>$, "len(%s)", $<string>3);  free($<string>1); free($<string>3);}
@@ -169,6 +180,7 @@ DOUBLE_VAL          : DOUBLE {$<decimal>$ = $<decimal>1;}
 
 DOUBLE_STRING       : DOUBLE_VAL {$<string>$ = malloc(20 + 1); sprintf($<string>$, "%f", $<decimal>1);}
                     | DOUBLE_VAR {$<string>$ = $<string>1;}
+                    | DOUBLE_ARRAY_VAR '[' INT_STRING ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3); sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3);}
                     | DOUBLE_STRING '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
                     | DOUBLE_STRING '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
                     | DOUBLE_STRING '*' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s * %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
@@ -212,12 +224,14 @@ int yywrap()
 int main() {
     yydebug=1;
     char * result; // esta bien que no este inicializada, se inicializa en yyparse
+    addThread("thread_0");
     int error = yyparse(&result);
     if(error){
         return error;
     }
     FILE * outfile = fopen("out.py", "w");
-    fprintf(outfile,"import numpy as np\n"
+    fprintf(outfile,"from operator import add\n"
+                    "import numpy as np\n"
                     "import simpleaudio as sa\n"
                     "\n"
                     "def semitones(qty):\n"
@@ -256,10 +270,7 @@ int main() {
                     "        notes *= 1.05 * np.e **(-0.0004 * 2 * np.pi * t3 * freq)\n"
                     "    return notes\n"
                     "\n"
-                    "def add_sound(list, notes, duration, volume, guitar=False):\n"
-                    "    return np.concatenate((list,sound(notes, duration, volume, guitar))) \n"
-                    "\n"
-                    "def sound(freqs, duration, volume, guitar):\n"
+                    "def sound(freqs, duration, volume, guitar=False):\n"
                     "    # start playback\n"
                     "    t = np.linspace(0, duration, int(duration * sample_rate) , False)\n"
                     "    final_sound = np.zeros(len(t))\n"
@@ -276,12 +287,13 @@ int main() {
                     "    play_obj.wait_done()\n"
                     "    return\n"
                     "\n"
-                    "B1 = np.empty(0)\n"
                     "%s\n"
-                    "play(B1)\n", result);
+                    "%s\n"
+                    "play(np.asarray(list(map(add, %s, np.zeros(len(thread_0))))))\n", init_threads(), result, thread_list());
     fclose(outfile);
     free(result);
     freeVars();
+    freeThreads();
     return 0;
 }
 
@@ -422,4 +434,59 @@ uint8_t isInNoteArrays(char * s){
 
 double semitones(int qty){
     return pow(2, qty/12.0);
+}
+
+void addThread(char * s){
+    if(isNewThread(s)){
+        if(threads_length % CHUNK == 0){
+            threads = realloc(threads, sizeof(*threads) * (threads_length + CHUNK));
+        }
+        threads[threads_length++] = strdup(s);
+    }
+}
+
+int isNewThread(char * s){
+    for(int i=0; i<threads_length; i++){
+        if(strcmp(threads[i], s) == 0){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+char *init_threads(){
+    int threads_names_lengths = 0;
+    for(int i=0; i<threads_length; i++){
+        threads_names_lengths += strlen(threads[i]);
+    }
+    char * ans = malloc(sizeof(*ans) * (threads_names_lengths + threads_length * 6 + 1));
+    int ans_current_length = 0;
+    for(int i=0; i<threads_length; i++){
+        sprintf(ans + ans_current_length, "%s = []\n", threads[i]);
+        ans_current_length += strlen(threads[i]) + 6;
+    }
+    return ans;
+}
+
+char * thread_list(){
+    int threads_names_lengths = 0;
+    for(int i=0; i<threads_length; i++){
+        threads_names_lengths += strlen(threads[i]);
+    }
+    char * ans = malloc(sizeof(*ans) * (threads_names_lengths + (threads_length - 1)* 2 + 1));
+    int ans_current_length = 0;
+    sprintf(ans, "%s", threads[0]);
+    ans_current_length += strlen(threads[0]);
+    for(int i=1; i<threads_length; i++){
+        sprintf(ans + ans_current_length, ", %s", threads[i]);
+        ans_current_length += strlen(threads[i]) + 2;
+    }
+    return ans;
+}
+
+void freeThreads(){
+    for(int i=0; i<threads_length; i++){
+        free(threads[i]);
+    }
+    free(threads);
 }
