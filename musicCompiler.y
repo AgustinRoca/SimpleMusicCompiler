@@ -51,6 +51,11 @@ size_t threads_length = 0;
     char *string;
 }
 
+%left '<' '>' '=' "!=" "<=" ">="
+%left '+' '-' 
+%left '*' '/'
+%nonassoc "++" "--"
+
 %token BPM INTEGER DOUBLE BOOL_OP VOLUME NOTE_T NOTE INT_T DOUBLE_T NEW_ID WHILE PLAY DURING LENGTH INT_VAR DOUBLE_VAR NOTE_VAR INT_ARRAY_VAR DOUBLE_ARRAY_VAR NOTE_ARRAY_VAR AS GUITAR PIANO IN THREAD
 %parse-param {char **result}
 
