@@ -18,9 +18,9 @@ enum added_node_status {
 };
 
 typedef struct hashmapCDT {
-    int8_t (*cmp)(void *e1, void *e2);
-    hash_t (*hasher)(void *e);
-    void (*freer)(void *e);
+    int8_t (*cmp)(void *key1, void *key2);
+    hash_t (*hasher)(void *key);
+    void (*freer)(void *key, void *value);
 
     sorted_hashmap_node *overflow_nodes;
     uint64_t overflow_nodes_taken_length;
@@ -29,7 +29,8 @@ typedef struct hashmapCDT {
 } hashmapCDT;
 
 typedef struct hashmap_nodeCDT {
-    void *element;
+    void *value;
+    void *key;
     hash_t hash; // Lo guardamos porque despues lo necesitamos para rebalancear
 
     sorted_hashmap_node next;
@@ -41,17 +42,17 @@ typedef struct hashmap_nodeCDT {
 /**
  * Busca un elemento a partir de un starting node
  * @param hashmap
- * @param element
+ * @param key
  * @return el nodo | NULL
  */
-static sorted_hashmap_node sorted_hashmap_find_from_node_(sorted_hashmap_t hashmap, sorted_hashmap_node node, void *element);
+static sorted_hashmap_node sorted_hashmap_find_from_node_(sorted_hashmap_t hashmap, sorted_hashmap_node node, void *key);
 /**
  * Busca un nodo para el cual insertar (sorted). Devuelve NULL si el nodo es NULL.
  * @param hashmap
- * @param element
+ * @param key
  * @return el nodo | NULL
  */
-static sorted_hashmap_node sorted_hashmap_find_previous_inserting_node_(sorted_hashmap_t hashmap, sorted_hashmap_node node, void *element);
+static sorted_hashmap_node sorted_hashmap_find_previous_inserting_node_(sorted_hashmap_t hashmap, sorted_hashmap_node node, void *key);
 /**
  * Elimina todos los nodos siguientes al pasado por parametro
  * @param hashmap
@@ -77,7 +78,7 @@ static bool sorted_hashmap_should_decrease(sorted_hashmap_t hashmap);
 /**
  * Agrega o reemplaza un nodo
  */
-static sorted_hashmap_node sorted_hashmap_add_(sorted_hashmap_t hashmap, sorted_hashmap_node *overflow_nodes, uint64_t overflow_nodes_length, void *element, hash_t hash, enum added_node_status *state);
+static sorted_hashmap_node sorted_hashmap_add_(sorted_hashmap_t hashmap, sorted_hashmap_node *overflow_nodes, uint64_t overflow_nodes_length, void *key, hash_t hash, void *value, enum added_node_status *state);
 
 /** ----------------- DEFINITIONS ----------------- */
 /**
@@ -103,17 +104,17 @@ sorted_hashmap_t sorted_hashmap_create() {
 /**
  * Busca un elemento
  * @param hashmap
- * @param element
+ * @param key
  * @return el nodo | NULL
  */
-sorted_hashmap_node sorted_hashmap_find(sorted_hashmap_t hashmap, void *element) {
-    if (hashmap == NULL || element == NULL) return NULL;
+sorted_hashmap_node sorted_hashmap_find(sorted_hashmap_t hashmap, void *key) {
+    if (hashmap == NULL || key == NULL) return NULL;
     if (hashmap->hasher == NULL || hashmap->cmp == NULL) return NULL;
     if (hashmap->total_nodes == 0) return NULL;
 
-    hash_t hash = hashmap->hasher(element);
+    hash_t hash = hashmap->hasher(key);
     uint64_t index = hash % hashmap->overflow_nodes_length;
-    return sorted_hashmap_find_from_node_(hashmap, hashmap->overflow_nodes[index], element);
+    return sorted_hashmap_find_from_node_(hashmap, hashmap->overflow_nodes[index], key);
 }
 
 /**
@@ -121,13 +122,13 @@ sorted_hashmap_node sorted_hashmap_find(sorted_hashmap_t hashmap, void *element)
  * @param hashmap
  * @param node
  */
-sorted_hashmap_node sorted_hashmap_add(sorted_hashmap_t hashmap, void *element) {
-    if (hashmap == NULL || element == NULL) return NULL;
+sorted_hashmap_node sorted_hashmap_add(sorted_hashmap_t hashmap, void *key, void *value) {
+    if (hashmap == NULL || key == NULL) return NULL;
     if (hashmap->hasher == NULL || hashmap->cmp == NULL) return NULL;
 
-    hash_t hash = hashmap->hasher(element);
+    hash_t hash = hashmap->hasher(key);
     enum added_node_status status;
-    sorted_hashmap_node node = sorted_hashmap_add_(hashmap, hashmap->overflow_nodes, hashmap->overflow_nodes_length, element, hash, &status);
+    sorted_hashmap_node node = sorted_hashmap_add_(hashmap, hashmap->overflow_nodes, hashmap->overflow_nodes_length, key, hash, value, &status);
     if (status == added_node_status_added_first_node) {
         hashmap->overflow_nodes_taken_length++;
         hashmap->total_nodes++;
@@ -143,11 +144,11 @@ sorted_hashmap_node sorted_hashmap_add(sorted_hashmap_t hashmap, void *element) 
 /**
  * Obtiene el elemento asociado a un nodo
  * @param node
- * @return element
+ * @return value
  */
 void *sorted_hashmap_get_element(sorted_hashmap_node node) {
     if (node == NULL) return NULL;
-    return node->element;
+    return node->value;
 }
 
 /**
@@ -163,7 +164,7 @@ void sorted_hashmap_remove(sorted_hashmap_t hashmap, sorted_hashmap_node node) {
         node->previous->next = node->next;
     } else {
         /** Es el primer nodo */
-        hash_t hash = hashmap->hasher(node->element);
+        hash_t hash = hashmap->hasher(node->value);
         hashmap->overflow_nodes[hash % hashmap->overflow_nodes_length] = node->next;
         hashmap->overflow_nodes_taken_length--;
     }
@@ -230,7 +231,7 @@ bool sorted_hashmap_set_hasher(sorted_hashmap_t hashmap, hash_t (hasher)(void *e
  * @param freer la funcion de hasheo
  * @return false si el hashmap ya tenia una funcion seteada.
  */
-bool sorted_hashmap_set_freer(sorted_hashmap_t hashmap, void (freer)(void *e)) {
+bool sorted_hashmap_set_freer(sorted_hashmap_t hashmap, void (freer)(void *key, void *value)) {
     if (hashmap == NULL || freer == NULL || hashmap->freer != NULL) return false;
     hashmap->freer = freer;
     return true;
@@ -239,14 +240,14 @@ bool sorted_hashmap_set_freer(sorted_hashmap_t hashmap, void (freer)(void *e)) {
 /**
  * Busca un elemento a partir de un starting node
  * @param hashmap
- * @param element
+ * @param key
  * @return el nodo | NULL
  */
-static sorted_hashmap_node sorted_hashmap_find_from_node_(sorted_hashmap_t hashmap, sorted_hashmap_node node, void *element) {
+static sorted_hashmap_node sorted_hashmap_find_from_node_(sorted_hashmap_t hashmap, sorted_hashmap_node node, void *key) {
     if (node == NULL) return NULL;
     int8_t cmp;
     do {
-        cmp = hashmap->cmp(node->element, element);
+        cmp = hashmap->cmp(node->key, key);
         if (cmp == 0) return node;
         if (cmp > 1) return NULL;
         node = node->next;
@@ -258,15 +259,15 @@ static sorted_hashmap_node sorted_hashmap_find_from_node_(sorted_hashmap_t hashm
 /**
  * Busca un nodo para el cual insertar (sorted). Devuelve NULL si se inserta al inicio
  * @param hashmap
- * @param element
+ * @param key
  * @return el nodo | NULL
  */
-static sorted_hashmap_node sorted_hashmap_find_previous_inserting_node_(sorted_hashmap_t hashmap, sorted_hashmap_node node, void *element) {
+static sorted_hashmap_node sorted_hashmap_find_previous_inserting_node_(sorted_hashmap_t hashmap, sorted_hashmap_node node, void *key) {
     if (node == NULL) return NULL;
     int8_t cmp;
     sorted_hashmap_node previous_node = NULL;
     do {
-        cmp = hashmap->cmp(node->element, element);
+        cmp = hashmap->cmp(node->key, key);
         if (cmp == 0) return node;
         if (cmp > 1) return previous_node;
         previous_node = node;
@@ -285,7 +286,7 @@ static void sorted_hashmap_free_starting_node_(sorted_hashmap_t hashmap, sorted_
     sorted_hashmap_node next_node;
     do {
         next_node = node->next;
-        if (hashmap->freer != NULL) hashmap->freer(node->element);
+        if (hashmap->freer != NULL) hashmap->freer(node->key, node->value);
         free(node);
     } while (next_node != NULL);
 }
@@ -307,7 +308,7 @@ static void sorted_hashmap_increase(sorted_hashmap_t hashmap) {
     for (uint64_t i = 0; i < hashmap->overflow_nodes_length; i++) {
         sorted_hashmap_node node = hashmap->overflow_nodes[i];
         while (node != NULL) {
-            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->element, node->hash, NULL);
+            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->value, node->hash, NULL);
             node = node->next;
         }
     }
@@ -340,7 +341,7 @@ static void sorted_hashmap_decrease(sorted_hashmap_t hashmap) {
     for (uint64_t i = 0; i < hashmap->overflow_nodes_length; i++) {
         sorted_hashmap_node node = hashmap->overflow_nodes[i];
         while (node != NULL) {
-            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->element, node->hash, NULL);
+            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->value, node->hash, NULL);
             node = node->next;
         }
     }
@@ -359,7 +360,7 @@ static bool sorted_hashmap_should_decrease(sorted_hashmap_t hashmap) {
 /**
  * Agrega o reemplaza un nodo
  */
-static sorted_hashmap_node sorted_hashmap_add_(sorted_hashmap_t hashmap, sorted_hashmap_node *overflow_nodes, uint64_t overflow_nodes_length, void *element, hash_t hash, enum added_node_status *state) {
+static sorted_hashmap_node sorted_hashmap_add_(sorted_hashmap_t hashmap, sorted_hashmap_node *overflow_nodes, uint64_t overflow_nodes_length, void *key, hash_t hash, void *value, enum added_node_status *state) {
     uint64_t index = hash % overflow_nodes_length;
     sorted_hashmap_node starting_node = overflow_nodes[index];
     sorted_hashmap_node new_node;
@@ -372,9 +373,9 @@ static sorted_hashmap_node sorted_hashmap_add_(sorted_hashmap_t hashmap, sorted_
         new_node->next = NULL;
         new_node->previous = NULL;
     } else {
-        sorted_hashmap_node previous_node = sorted_hashmap_find_previous_inserting_node_(hashmap, starting_node, element);
-        if (previous_node != NULL && hashmap->cmp(previous_node->element, element) == 0) {
-            previous_node->element = element;
+        sorted_hashmap_node previous_node = sorted_hashmap_find_previous_inserting_node_(hashmap, starting_node, key);
+        if (previous_node != NULL && hashmap->cmp(previous_node->key, key) == 0) {
+            previous_node->value = value;
             if (state != NULL) *state = added_node_status_not_added;
             return previous_node;
         }
@@ -398,6 +399,7 @@ static sorted_hashmap_node sorted_hashmap_add_(sorted_hashmap_t hashmap, sorted_
         }
     }
 
-    new_node->element = element;
+    new_node->key = key;
+    new_node->value = value;
     return new_node;
 }

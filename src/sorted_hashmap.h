@@ -16,31 +16,32 @@ typedef uint64_t hash_t;
 
 /**
  * Crea un hashmap
+ * @param initial_overflow_length el valor inicial del tamano del array principal (accessible por hashing)
  * @param element
  * @return el nodo creado | NULL
  */
-sorted_hashmap_t sorted_hashmap_create();
+sorted_hashmap_t sorted_hashmap_create(uint64_t initial_overflow_length);
 
 /**
  * Busca un elemento
  * @param hashmap
- * @param element
+ * @param key
  * @return el nodo creado | NULL
  */
-sorted_hashmap_node sorted_hashmap_find(sorted_hashmap_t hashmap, void *element);
+sorted_hashmap_node sorted_hashmap_find(sorted_hashmap_t hashmap, void *key);
 
 /**
  * Agrega un nodo
  * @param hashmap
- * @param element
+ * @param key
  * @return node
  */
-sorted_hashmap_node sorted_hashmap_add(sorted_hashmap_t hashmap, void *element);
+sorted_hashmap_node sorted_hashmap_add(sorted_hashmap_t hashmap, void *key, void *value);
 
 /**
  * Obtiene el elemento asociado a un nodo
  * @param node
- * @return element
+ * @return value
  */
 void *sorted_hashmap_get_element(sorted_hashmap_node node);
 
@@ -70,7 +71,7 @@ uint64_t sorted_hashmap_get_total_nodes(sorted_hashmap_t hashmap);
  * @param cmp la funcion de comparacion (sigue estandar C)
  * @return false si el hashmap ya tenia una funcion de comparacion seteada.
  */
-bool sorted_hashmap_set_cmp(sorted_hashmap_t hashmap, int8_t (cmp)(void *e1, void *e2));
+bool sorted_hashmap_set_cmp(sorted_hashmap_t hashmap, int8_t (cmp)(void *key1, void *key2));
 
 /**
  * Setea la funcion de hasheo
@@ -78,7 +79,7 @@ bool sorted_hashmap_set_cmp(sorted_hashmap_t hashmap, int8_t (cmp)(void *e1, voi
  * @param hasher la funcion de hasheo
  * @return false si el hashmap ya tenia una funcion de hasheo seteada.
  */
-bool sorted_hashmap_set_hasher(sorted_hashmap_t hashmap, hash_t (hasher)(void *e));
+bool sorted_hashmap_set_hasher(sorted_hashmap_t hashmap, hash_t (hasher)(void *key));
 
 /**
  * Setea la funcion de free. Se encarga de eliminar el elemento de memoria (si es necesario)
@@ -88,6 +89,38 @@ bool sorted_hashmap_set_hasher(sorted_hashmap_t hashmap, hash_t (hasher)(void *e
  * @param freer
  * @return
  */
-bool sorted_hashmap_set_freer(sorted_hashmap_t hashmap, void (freer)(void *e));
+bool sorted_hashmap_set_freer(sorted_hashmap_t hashmap, void (freer)(void *key, void *value));
+
+/**
+ * Crea una lista con todos los nodos
+ */
+sorted_hashmap_list_t sorted_hashmap_get_values(sorted_hashmap_t hashmap);
+
+/**
+ * Devuelve el primer elemento en la lista
+ * @param list
+ * @return
+ */
+sorted_hashmap_list_node_t sorted_hashmap_list_get_first(sorted_hashmap_list_t list);
+
+/**
+ * Devuelve el siguiente nodo si es que existe, o NULL
+ * @param node
+ * @return
+ */
+sorted_hashmap_list_node_t sorted_hashmap_list_get_next_node(sorted_hashmap_list_node_t node);
+
+/**
+ * Devuelve el elemento asociado
+ * @param node
+ * @return
+ */
+void *sorted_hashmap_list_get_element(sorted_hashmap_list_node_t node);
+
+/**
+ * Elimina los recursos ocupados por una lista
+ * @param list
+ */
+void sorted_hashmap_list_free(sorted_hashmap_list_t list);
 
 #endif //PC_2020A_6_TPE_SOCKSV5_SORTED_HASHMAP_H
