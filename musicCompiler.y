@@ -43,7 +43,7 @@ size_t note_array_vars_length = 0;
     char *string;
 }
 
-%token BPM INTEGER DOUBLE BOOL_OP VOLUME NOTE_T NOTE INT_T DOUBLE_T NEW_ID WHILE PLAY DURING LENGTH INT_VAR DOUBLE_VAR NOTE_VAR INT_ARRAY_VAR DOUBLE_ARRAY_VAR NOTE_ARRAY_VAR
+%token BPM INTEGER DOUBLE BOOL_OP VOLUME NOTE_T NOTE INT_T DOUBLE_T NEW_ID WHILE PLAY DURING LENGTH INT_VAR DOUBLE_VAR NOTE_VAR INT_ARRAY_VAR DOUBLE_ARRAY_VAR NOTE_ARRAY_VAR AS GUITAR PIANO
 %parse-param {char **result}
 
 %%
@@ -57,6 +57,8 @@ NUMBER              : INT_STRING {$<string>$ = $<string>1;}
                     | DOUBLE_STRING {$<string>$ = $<string>1;}
 
 PLAY_FUNC           : PLAY NOTE_VAL DURING NUMBER {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4);}
+                    | PLAY NOTE_VAL DURING NUMBER AS PIANO {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4); free($<string>5); free($<string>6);}
+                    | PLAY NOTE_VAL DURING NUMBER AS GUITAR {$<string>$ = malloc(strlen($<string>2) + 48 + 6 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume, True)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4); free($<string>5); free($<string>6);}
 
 LENGTH_FUNC         : LENGTH '(' ARRAY ')' {$<string>$ = malloc(strlen($<string>3) + 6);sprintf($<string>$, "len(%s)", $<string>3); free($<string>1); free($<string>3);}
                     | LENGTH '(' ARRAY_VAR ')' {$<string>$ = malloc(strlen($<string>3) + 6); sprintf($<string>$, "len(%s)", $<string>3);  free($<string>1); free($<string>3);}
@@ -238,7 +240,7 @@ int main() {
                     "    return np.array(samples)\n"
                     "    \n"
                     "# generate sine wave notes\n"
-                    "def play_note(freq, duration, guitar=False):\n"
+                    "def play_note(freq, duration, guitar):\n"
                     "    if(guitar):\n"
                     "        wavetable_size = sample_rate // int(freq)\n"
                     "        wavetable = (2 * np.random.randint(0, 2, wavetable_size) - 1).astype(np.float)\n"
@@ -254,15 +256,15 @@ int main() {
                     "        notes *= 1.05 * np.e **(-0.0004 * 2 * np.pi * t3 * freq)\n"
                     "    return notes\n"
                     "\n"
-                    "def add_sound(list, notes, duration, volume):\n"
-                    "    return np.concatenate((list,sound(notes, duration, volume))) \n"
+                    "def add_sound(list, notes, duration, volume, guitar=False):\n"
+                    "    return np.concatenate((list,sound(notes, duration, volume, guitar))) \n"
                     "\n"
-                    "def sound(freqs, duration, volume):\n"
+                    "def sound(freqs, duration, volume, guitar):\n"
                     "    # start playback\n"
                     "    t = np.linspace(0, duration, int(duration * sample_rate) , False)\n"
                     "    final_sound = np.zeros(len(t))\n"
                     "    for freq in freqs:\n"
-                    "        sound = play_note(freq, duration)\n"
+                    "        sound = play_note(freq, duration, guitar)\n"
                     "        final_sound[0:len(sound)] += sound[0:len(sound)]\n"
                     "    final_sound *= 32767 / np.max(np.abs(final_sound))\n"
                     "    final_sound *= volume\n"

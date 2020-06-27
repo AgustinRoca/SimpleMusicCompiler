@@ -15,7 +15,7 @@
 alpha [A-Za-z]
 digit [0-9]
 double -?[0-9]+\.[0-9]+
-note  [A-G]#?[1-8]
+note  [A-G]#?[0-8]
 bool_op (<|>)=?|== 
 
 %%
@@ -30,6 +30,9 @@ bool_op (<|>)=?|==
 "during"                            {yylval.string=strdup(yytext); return DURING;}
 "while"                             {yylval.string=strdup(yytext); return WHILE;}
 "length"                            {yylval.string=strdup("len"); return LENGTH;}
+"as"                                {yylval.string=strdup(yytext); return AS;}
+"guitar"                            {yylval.string=strdup(yytext); return GUITAR;}
+"piano"                             {yylval.string=strdup(yytext); return PIANO;}
 {bool_op}                           {yylval.string=strdup(yytext); return BOOL_OP;}
 {digit}+                            {yylval.integer=atoi(yytext); return INTEGER;}
 {double}                            {yylval.decimal=atof(yytext); return DOUBLE;}
