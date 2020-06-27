@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <math.h>
 
 #define CHUNK 10
@@ -46,148 +47,148 @@ size_t note_array_vars_length = 0;
 %parse-param {char **result}
 
 %%
-S                   : SET_BPM VOL LINE {*result = (char*)malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3)+ 3); sprintf(*result,"%s\n%s\n%s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3)}
+S                   : SET_BPM VOL LINE {*result = (char*)malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3)+ 3); sprintf(*result,"%s\n%s\n%s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3);}
 
-SET_BPM             : BPM INT_STRING ';' {$<string>$ = malloc(21 + strlen($<string>2)); sprintf($<string>$, "length_of_beat = 60/%s", $<string>2); free($<string>1); free($<string>2)}
+SET_BPM             : BPM INT_STRING ';' {$<string>$ = malloc(21 + strlen($<string>2)); sprintf($<string>$, "length_of_beat = 60/%s", $<string>2); free($<string>1); free($<string>2);}
 
-VOL                 : VOLUME NUMBER ';' {$<string>$ = malloc(10 + strlen($<string>2)); sprintf($<string>$, "volume = %s", $<string>2); free($<string>1); free($<string>2)}
+VOL                 : VOLUME NUMBER ';' {$<string>$ = malloc(10 + strlen($<string>2)); sprintf($<string>$, "volume = %s", $<string>2); free($<string>1); free($<string>2);}
 
-NUMBER              : INT_STRING {$<string>$ = $<string>1}
-                    | DOUBLE_STRING {$<string>$ = $<string>1}
+NUMBER              : INT_STRING {$<string>$ = $<string>1;}
+                    | DOUBLE_STRING {$<string>$ = $<string>1;}
 
-PLAY_FUNC           : PLAY NOTE_VAL DURING NUMBER {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4)}
+PLAY_FUNC           : PLAY NOTE_VAL DURING NUMBER {$<string>$ = malloc(strlen($<string>2) + 48 + strlen($<string>4)); sprintf($<string>$, "B1 = add_sound(B1, %s, length_of_beat * %s, volume)", $<string>2, $<string>4);  free($<string>1); free($<string>2); free($<string>3); free($<string>4);}
 
-LENGTH_FUNC         : LENGTH '(' ARRAY ')' {$<string>$ = malloc(strlen($<string>3) + 6);sprintf($<string>$, "len(%s)", $<string>3); free($<string>1); free($<string>3)}
-                    | LENGTH '(' ARRAY_VAR ')' {$<string>$ = malloc(strlen($<string>3) + 6); sprintf($<string>$, "len(%s)", $<string>3);  free($<string>1); free($<string>3)}
+LENGTH_FUNC         : LENGTH '(' ARRAY ')' {$<string>$ = malloc(strlen($<string>3) + 6);sprintf($<string>$, "len(%s)", $<string>3); free($<string>1); free($<string>3);}
+                    | LENGTH '(' ARRAY_VAR ')' {$<string>$ = malloc(strlen($<string>3) + 6); sprintf($<string>$, "len(%s)", $<string>3);  free($<string>1); free($<string>3);}
 
-ARRAY               : INT_ARRAY {$<string>$ = $<string>1}
-                    | DOUBLE_ARRAY {$<string>$ = $<string>1}
-                    | NOTE_ARRAY {$<string>$ = $<string>1}
+ARRAY               : INT_ARRAY {$<string>$ = $<string>1;}
+                    | DOUBLE_ARRAY {$<string>$ = $<string>1;}
+                    | NOTE_ARRAY {$<string>$ = $<string>1;}
 
-ARRAY_VAR           : NUMBER_ARRAY_VAR {$<string>$ = $<string>1}
-                    | NOTE_ARRAY_VAR {$<string>$ = $<string>1}
+ARRAY_VAR           : NUMBER_ARRAY_VAR {$<string>$ = $<string>1;}
+                    | NOTE_ARRAY_VAR {$<string>$ = $<string>1;}
 
-NUMBER_ARRAY_VAR    : INT_ARRAY_VAR {$<string>$ = $<string>1}
-                    | DOUBLE_ARRAY_VAR {$<string>$ = $<string>1}
+NUMBER_ARRAY_VAR    : INT_ARRAY_VAR {$<string>$ = $<string>1;}
+                    | DOUBLE_ARRAY_VAR {$<string>$ = $<string>1;}
 
-NUMBER_VAR          : INT_VAR {$<string>$ = $<string>1}
-                    | DOUBLE_VAR {$<string>$ = $<string>1}
+NUMBER_VAR          : INT_VAR {$<string>$ = $<string>1;}
+                    | DOUBLE_VAR {$<string>$ = $<string>1;}
 
-NOTE_ARRAY          : '[' NOTE_LIST ']' {$<string>$ = malloc(strlen($<string>2) + 3); sprintf($<string>$, "[%s]", $<string>2); free($<string>2)}
+NOTE_ARRAY          : '[' NOTE_LIST ']' {$<string>$ = malloc(strlen($<string>2) + 3); sprintf($<string>$, "[%s]", $<string>2); free($<string>2);}
 
-NOTE_LIST           : NOTE_VAL ',' NOTE_LIST {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 2); sprintf($<string>$, "%s,%s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | NOTE_VAL {$<string>$ = $<string>1}
+NOTE_LIST           : NOTE_VAL ',' NOTE_LIST {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 2); sprintf($<string>$, "%s,%s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | NOTE_VAL {$<string>$ = $<string>1;}
 
-INT_ARRAY           : '[' INT_LIST ']' {$<string>$ = malloc(strlen($<string>2) + 3); sprintf($<string>$, "[%s]", $<string>2); free($<string>2)}
+INT_ARRAY           : '[' INT_LIST ']' {$<string>$ = malloc(strlen($<string>2) + 3); sprintf($<string>$, "[%s]", $<string>2); free($<string>2);}
 
-INT_LIST            : INT_STRING ',' INT_LIST {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 2); sprintf($<string>$, "%s, %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | INT_STRING {$<string>$ = $<string>1}
+INT_LIST            : INT_STRING ',' INT_LIST {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 2); sprintf($<string>$, "%s, %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | INT_STRING {$<string>$ = $<string>1;}
 
-DOUBLE_ARRAY        : '[' DOUBLE_LIST ']' {$<string>$ = malloc(strlen($<string>2) + 3); sprintf($<string>$, "[%s]", $<string>2); free($<string>2)}
+DOUBLE_ARRAY        : '[' DOUBLE_LIST ']' {$<string>$ = malloc(strlen($<string>2) + 3); sprintf($<string>$, "[%s]", $<string>2); free($<string>2);}
 
-DOUBLE_LIST         : DOUBLE_STRING ',' DOUBLE_LIST {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 2); sprintf($<string>$, "%s, %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | DOUBLE_STRING {$<string>$ = $<string>1}
+DOUBLE_LIST         : DOUBLE_STRING ',' DOUBLE_LIST {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 2); sprintf($<string>$, "%s, %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | DOUBLE_STRING {$<string>$ = $<string>1;}
                 
 WHILE_LOOP          : WHILE '(' BOOLEAN_VAL ')' OPEN_BRACKET LINE CLOSE_BRACKET {$<string>$ = malloc(strlen($<string>3) +  strlen($<string>6) + 15);sprintf($<string>$, "while %s:\n%s", $<string>3, $<string>6); free($<string>1); free($<string>3); free($<string>6);}
 
-OPEN_BRACKET        : '{' {tab_qty++}
+OPEN_BRACKET        : '{' {tab_qty++;}
 CLOSE_BRACKET       : '}' {tab_qty--;}
 
-EXPRESION           : ASSIGNATION {$<string>$ = $<string>1}
-                    | NOTE_VAL {$<string>$ = $<string>1}
-                    | NUMBER {$<string>$ = $<string>1}
+EXPRESION           : ASSIGNATION {$<string>$ = $<string>1;}
+                    | NOTE_VAL {$<string>$ = $<string>1;}
+                    | NUMBER {$<string>$ = $<string>1;}
 
-INT_ASSIGNATION     : INT_T NEW_ID '=' INT_STRING {addToInts($<string>2); $<string>$ = malloc(strlen($<string>2) + strlen($<string>4) + 4); sprintf($<string>$, "%s = %s", $<string>2, $<string>4); free($<string>1); free($<string>2); free($<string>4)}; 
-                    | INT_VAR '=' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s = %s", $<string>1, $<string>3); free($<string>1); free($<string>3)};
+INT_ASSIGNATION     : INT_T NEW_ID '=' INT_STRING {addToInts($<string>2); $<string>$ = malloc(strlen($<string>2) + strlen($<string>4) + 4); sprintf($<string>$, "%s = %s", $<string>2, $<string>4); free($<string>1); free($<string>2); free($<string>4);}; 
+                    | INT_VAR '=' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s = %s", $<string>1, $<string>3); free($<string>1); free($<string>3);};
 
-DOUBLE_ASSIGNATION  : DOUBLE_T NEW_ID '=' DOUBLE_STRING {addToDoubles($<string>2); $<string>$ = malloc(strlen($<string>2) + strlen($<string>4) + 4); sprintf($<string>$, "%s = %s", $<string>2, $<string>4); free($<string>1); free($<string>2); free($<string>4)}; 
-                    | DOUBLE_VAR '=' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s = %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}; 
+DOUBLE_ASSIGNATION  : DOUBLE_T NEW_ID '=' DOUBLE_STRING {addToDoubles($<string>2); $<string>$ = malloc(strlen($<string>2) + strlen($<string>4) + 4); sprintf($<string>$, "%s = %s", $<string>2, $<string>4); free($<string>1); free($<string>2); free($<string>4);}; 
+                    | DOUBLE_VAR '=' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s = %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}; 
 
 
 NOTE_ASSIGNATION    : NOTE_T NEW_ID '=' NOTE_VAL {addToNotes($<string>2); $<string>$ = malloc(strlen($<string>2) + strlen($<string>4) + 4); sprintf($<string>$, "%s = %s", $<string>2, $<string>4); free($<string>1); free($<string>2); free($<string>4);}
-                    | NOTE_VAR '=' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s = %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
+                    | NOTE_VAR '=' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s = %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
 
 
-ASSIGNATION         : NOTE_T '[' ']' NEW_ID '=' NOTE_ARRAY {addToNoteArrays($<string>4); $<string>$ = malloc(strlen($<string>4) + strlen($<string>6) + 4);sprintf($<string>$, "%s = %s", $<string>4, $<string>6); free($<string>4); free($<string>6)}
-                    | INT_T '[' ']' NEW_ID '=' INT_ARRAY {addToIntArrays($<string>4); $<string>$ = malloc(strlen($<string>4) + strlen($<string>6) + 4);sprintf($<string>$, "%s = %s", $<string>4, $<string>6); free($<string>4); free($<string>6)}
-                    | DOUBLE_T '[' ']' NEW_ID '=' DOUBLE_ARRAY {addToDoubleArrays($<string>4); $<string>$ = malloc(strlen($<string>4) + strlen($<string>6) + 4);sprintf($<string>$, "%s = %s", $<string>4, $<string>6); free($<string>4); free($<string>6)}
-                    | NUMBER_VAR'+' '+' {$<string>$ = malloc(2*strlen($<string>1) + 8);sprintf($<string>$, "%s = %s + 1", $<string>1, $<string>1); free($<string>1)}
-                    | NUMBER_VAR '-' '-' {$<string>$ = malloc(2*strlen($<string>1) + 8);sprintf($<string>$, "%s = %s - 1", $<string>1, $<string>1); free($<string>1)}
-                    | NUMBER_VAR '*' '=' INT_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s * (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4)}
-                    | NUMBER_VAR '/' '=' INT_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s / (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4)}
-                    | NUMBER_VAR '+' '=' INT_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s + (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4)}
-                    | NUMBER_VAR '-' '=' INT_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s * (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4)}
-                    | DOUBLE_VAR '*' '=' DOUBLE_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s * (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4)}
-                    | DOUBLE_VAR '/' '=' DOUBLE_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s / (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4)}
-                    | DOUBLE_VAR '+' '=' DOUBLE_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s + (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4)}
-                    | DOUBLE_VAR '-' '=' DOUBLE_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s * (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4)}
-                    | NOTE_ASSIGNATION {$<string>$ = $<string>1}
-                    | INT_ASSIGNATION {$<string>$ = $<string>1}
-                    | DOUBLE_ASSIGNATION {$<string>$ = $<string>1}
+ASSIGNATION         : NOTE_T '[' ']' NEW_ID '=' NOTE_ARRAY {addToNoteArrays($<string>4); $<string>$ = malloc(strlen($<string>4) + strlen($<string>6) + 4);sprintf($<string>$, "%s = %s", $<string>4, $<string>6); free($<string>4); free($<string>6);}
+                    | INT_T '[' ']' NEW_ID '=' INT_ARRAY {addToIntArrays($<string>4); $<string>$ = malloc(strlen($<string>4) + strlen($<string>6) + 4);sprintf($<string>$, "%s = %s", $<string>4, $<string>6); free($<string>4); free($<string>6);}
+                    | DOUBLE_T '[' ']' NEW_ID '=' DOUBLE_ARRAY {addToDoubleArrays($<string>4); $<string>$ = malloc(strlen($<string>4) + strlen($<string>6) + 4);sprintf($<string>$, "%s = %s", $<string>4, $<string>6); free($<string>4); free($<string>6);}
+                    | NUMBER_VAR'+' '+' {$<string>$ = malloc(2*strlen($<string>1) + 8);sprintf($<string>$, "%s = %s + 1", $<string>1, $<string>1); free($<string>1);}
+                    | NUMBER_VAR '-' '-' {$<string>$ = malloc(2*strlen($<string>1) + 8);sprintf($<string>$, "%s = %s - 1", $<string>1, $<string>1); free($<string>1);}
+                    | NUMBER_VAR '*' '=' INT_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s * (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4);}
+                    | NUMBER_VAR '/' '=' INT_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s / (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4);}
+                    | NUMBER_VAR '+' '=' INT_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s + (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4);}
+                    | NUMBER_VAR '-' '=' INT_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s * (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4);}
+                    | DOUBLE_VAR '*' '=' DOUBLE_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s * (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4);}
+                    | DOUBLE_VAR '/' '=' DOUBLE_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s / (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4);}
+                    | DOUBLE_VAR '+' '=' DOUBLE_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s + (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4);}
+                    | DOUBLE_VAR '-' '=' DOUBLE_STRING {$<string>$ = malloc(2*strlen($<string>1) + 20 + 7);sprintf($<string>$, "%s = %s * (%s)", $<string>1, $<string>1, $<string>4); free($<string>1); free($<string>4);}
+                    | NOTE_ASSIGNATION {$<string>$ = $<string>1;}
+                    | INT_ASSIGNATION {$<string>$ = $<string>1;}
+                    | DOUBLE_ASSIGNATION {$<string>$ = $<string>1;}
 
-INT_VAL             : INTEGER {$<integer>$ = $<integer>1}
-                    | INT_VAL '+' INT_VAL {$<integer>$ = $<integer>1 + $<integer>3}
-                    | INT_VAL '-' INT_VAL {$<integer>$ = $<integer>1 - $<integer>3}
-                    | INT_VAL '*' INT_VAL {$<integer>$ = $<integer>1 * $<integer>3}
-                    | INT_VAL '/' INT_VAL {$<integer>$ = $<integer>1 / $<integer>3}
+INT_VAL             : INTEGER {$<integer>$ = $<integer>1;}
+                    | INT_VAL '+' INT_VAL {$<integer>$ = $<integer>1 + $<integer>3;}
+                    | INT_VAL '-' INT_VAL {$<integer>$ = $<integer>1 - $<integer>3;}
+                    | INT_VAL '*' INT_VAL {$<integer>$ = $<integer>1 * $<integer>3;}
+                    | INT_VAL '/' INT_VAL {$<integer>$ = $<integer>1 / $<integer>3;}
 
-INT_STRING          : INT_STRING '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | INT_STRING '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | INT_STRING '*' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s * %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | INT_STRING '/' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s / %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | INT_VAL {$<string>$ = malloc(20 + 1); sprintf($<string>$, "%d", $<integer>1)}
-                    | LENGTH_FUNC {$<string>$ = $<string>1}
-                    | INT_VAR {$<string>$ = $<string>1}
+INT_STRING          : INT_STRING '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | INT_STRING '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | INT_STRING '*' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s * %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | INT_STRING '/' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s / %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | INT_VAL {$<string>$ = malloc(20 + 1); sprintf($<string>$, "%d", $<integer>1);}
+                    | LENGTH_FUNC {$<string>$ = $<string>1;}
+                    | INT_VAR {$<string>$ = $<string>1;}
 
 
-DOUBLE_VAL          : DOUBLE {$<decimal>$ = $<decimal>1}
-                    | DOUBLE_VAL '+' DOUBLE_VAL {$<decimal>$ = $<decimal>1 + $<decimal>3}
-                    | DOUBLE_VAL '-' DOUBLE_VAL {$<decimal>$ = $<decimal>1 - $<decimal>3}
-                    | DOUBLE_VAL '*' DOUBLE_VAL {$<decimal>$ = $<decimal>1 * $<decimal>3}
-                    | DOUBLE_VAL '/' DOUBLE_VAL {$<decimal>$ = $<decimal>1 / $<decimal>3}
-                    | DOUBLE_VAL '+' INT_VAL {$<decimal>$ = $<decimal>1 + (double)$<integer>3}
-                    | DOUBLE_VAL '-' INT_VAL {$<decimal>$ = $<decimal>1 - (double)$<integer>3}
-                    | DOUBLE_VAL '*' INT_VAL {$<decimal>$ = $<decimal>1 * (double)$<integer>3}
-                    | DOUBLE_VAL '/' INT_VAL {$<decimal>$ = $<decimal>1 / (double)$<integer>3}
-                    | INT_VAL '+' DOUBLE_VAL {$<decimal>$ = (float)$<integer>1 + $<decimal>3}
-                    | INT_VAL '-' DOUBLE_VAL {$<decimal>$ = (float)$<integer>1 - $<decimal>3}
-                    | INT_VAL '*' DOUBLE_VAL {$<decimal>$ = (float)$<integer>1 * $<decimal>3}
-                    | INT_VAL '/' DOUBLE_VAL {$<decimal>$ = (float)$<integer>1 / $<decimal>3}
+DOUBLE_VAL          : DOUBLE {$<decimal>$ = $<decimal>1;}
+                    | DOUBLE_VAL '+' DOUBLE_VAL {$<decimal>$ = $<decimal>1 + $<decimal>3;}
+                    | DOUBLE_VAL '-' DOUBLE_VAL {$<decimal>$ = $<decimal>1 - $<decimal>3;}
+                    | DOUBLE_VAL '*' DOUBLE_VAL {$<decimal>$ = $<decimal>1 * $<decimal>3;}
+                    | DOUBLE_VAL '/' DOUBLE_VAL {$<decimal>$ = $<decimal>1 / $<decimal>3;}
+                    | DOUBLE_VAL '+' INT_VAL {$<decimal>$ = $<decimal>1 + (double)$<integer>3;}
+                    | DOUBLE_VAL '-' INT_VAL {$<decimal>$ = $<decimal>1 - (double)$<integer>3;}
+                    | DOUBLE_VAL '*' INT_VAL {$<decimal>$ = $<decimal>1 * (double)$<integer>3;}
+                    | DOUBLE_VAL '/' INT_VAL {$<decimal>$ = $<decimal>1 / (double)$<integer>3;}
+                    | INT_VAL '+' DOUBLE_VAL {$<decimal>$ = (float)$<integer>1 + $<decimal>3;}
+                    | INT_VAL '-' DOUBLE_VAL {$<decimal>$ = (float)$<integer>1 - $<decimal>3;}
+                    | INT_VAL '*' DOUBLE_VAL {$<decimal>$ = (float)$<integer>1 * $<decimal>3;}
+                    | INT_VAL '/' DOUBLE_VAL {$<decimal>$ = (float)$<integer>1 / $<decimal>3;}
 
-DOUBLE_STRING       : DOUBLE_VAL {$<string>$ = malloc(20 + 1); sprintf($<string>$, "%f", $<decimal>1)}
-                    | DOUBLE_VAR {$<string>$ = $<string>1}
-                    | DOUBLE_STRING '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | DOUBLE_STRING '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | DOUBLE_STRING '*' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s * %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | DOUBLE_STRING '/' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s / %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | INT_STRING '+' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | INT_STRING '-' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | INT_STRING '*' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s * %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | INT_STRING '/' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s / %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
+DOUBLE_STRING       : DOUBLE_VAL {$<string>$ = malloc(20 + 1); sprintf($<string>$, "%f", $<decimal>1);}
+                    | DOUBLE_VAR {$<string>$ = $<string>1;}
+                    | DOUBLE_STRING '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | DOUBLE_STRING '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | DOUBLE_STRING '*' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s * %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | DOUBLE_STRING '/' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s / %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | INT_STRING '+' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | INT_STRING '-' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | INT_STRING '*' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s * %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | INT_STRING '/' DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s / %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
 
-NOTE_VAL            : NOTE {$<string>$ = malloc(20 + 3); sprintf($<string>$, "[%f]",$<decimal>1)}
-                    | NOTE_ARRAY_VAR '[' INT_STRING ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3);sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | NOTE_ARRAY_VAR '[' INT_ARRAY_VAR ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3); sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | NOTE_VAL '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 30); sprintf($<string>$, "[A1 * semitones(%s) for A1 in %s]", $<string>3, $<string>1); free($<string>1); free($<string>3)}
-                    | NOTE_VAL '+' INT_VAL {$<string>$ = malloc(strlen($<string>1) + 20 + 19); sprintf($<string>$, "[A1 * %f for A1 in %s]", semitones($<integer>3), $<string>1); free($<string>1)}
-                    | NOTE_VAL '+' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | NOTE_VAL '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | NOTE_VAL '-' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3)}
-                    | NOTE_VAR {$<string>$ = $<string>1}
+NOTE_VAL            : NOTE {$<string>$ = malloc(20 + 3); sprintf($<string>$, "[%f]",$<decimal>1);}
+                    | NOTE_ARRAY_VAR '[' INT_STRING ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3);sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | NOTE_ARRAY_VAR '[' INT_ARRAY_VAR ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3); sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | NOTE_VAL '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 30); sprintf($<string>$, "[A1 * semitones(%s) for A1 in %s]", $<string>3, $<string>1); free($<string>1); free($<string>3);}
+                    | NOTE_VAL '+' INT_VAL {$<string>$ = malloc(strlen($<string>1) + 20 + 19); sprintf($<string>$, "[A1 * %f for A1 in %s]", semitones($<integer>3), $<string>1); free($<string>1);}
+                    | NOTE_VAL '+' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | NOTE_VAL '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | NOTE_VAL '-' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | NOTE_VAR {$<string>$ = $<string>1;}
 
-BOOLEAN_VAL         : NUMBER_VAR BOOL_OP INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3)}
-                    | INT_STRING BOOL_OP NUMBER_VAR {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3)}
-                    | INT_STRING BOOL_OP INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3)}
-                    | NUMBER_VAR BOOL_OP DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3)}
-                    | DOUBLE_STRING BOOL_OP NUMBER_VAR {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3)}
-                    | DOUBLE_STRING BOOL_OP DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3)}
+BOOLEAN_VAL         : NUMBER_VAR BOOL_OP INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3);}
+                    | INT_STRING BOOL_OP NUMBER_VAR {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3);}
+                    | INT_STRING BOOL_OP INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3);}
+                    | NUMBER_VAR BOOL_OP DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3);}
+                    | DOUBLE_STRING BOOL_OP NUMBER_VAR {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3);}
+                    | DOUBLE_STRING BOOL_OP DOUBLE_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3);}
 
-LINE                : EXPRESION ';' {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty); sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty); free($<string>1)}
-                    | WHILE_LOOP {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty);sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty); free($<string>1)}
-                    | PLAY_FUNC ';' {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty);sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty);free($<string>1)}
-                    | SET_BPM   {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty);sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty);free($<string>1)}
-                    | VOL  {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty);sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty);free($<string>1)}
-                    | LINE LINE {$<string>$ = malloc(strlen($<string>1) +  strlen($<string>2) + 1 + tab_qty);sprintf($<string>$, "%s%s", $<string>1, $<string>2); free($<string>1); free($<string>2)}
+LINE                : EXPRESION ';' {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty); sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty); free($<string>1);}
+                    | WHILE_LOOP {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty);sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty); free($<string>1);}
+                    | PLAY_FUNC ';' {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty);sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty);free($<string>1);}
+                    | SET_BPM   {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty);sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty);free($<string>1);}
+                    | VOL  {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty);sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty);free($<string>1);}
+                    | LINE LINE {$<string>$ = malloc(strlen($<string>1) +  strlen($<string>2) + 1 + tab_qty);sprintf($<string>$, "%s%s", $<string>1, $<string>2); free($<string>1); free($<string>2);}
 
 %%
 
