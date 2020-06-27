@@ -1,5 +1,5 @@
 bpm 72;
-volume 1/8.0;
+volume 1/2.0;
 
 note[] notes_left =  [F#3, C#4, F#4, F#4, D3, A3, E4];
 note[] notes_right = [A5,  G#5, A5,  G#5, A5, E5, A5];
@@ -212,8 +212,6 @@ play B3 + B4 during 0.5;
 play E4 + A5 during 0.25;
 play E4 + A5 during 0.125;
 play E4 + B5 during 0.125;
-play E3 + A5 during 0.25;
-play E3 + G#5 during 0.25;
 
 note[] notes_left_18 =  [E3, E3,  F#2, F#2, C#3, C#3, G#2];
 note[] notes_right_18 = [A5, G#5, A5,  A4,  E5,  A4,  A5];
