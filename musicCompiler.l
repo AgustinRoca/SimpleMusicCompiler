@@ -3,12 +3,7 @@
     #include <math.h>
     #include "musicCompiler.tab.h"
 
-    uint8_t isInInts(char * s);
-    uint8_t isInDoubles(char * s);
-    uint8_t isInNotes(char * s);
-    uint8_t isInIntArrays(char * s);
-    uint8_t isInDoubleArrays(char * s);
-    uint8_t isInNoteArrays(char * s);
+    variable_type_t getVarType(char * s);
     double freq(char * note_name);
 %}
 
@@ -43,25 +38,15 @@ bool_op (<|>)=?|==
 {note}                              {yylval.decimal=freq(yytext); return NOTE;} /* Importante que este arriba de los IDs! */
 {alpha}({alpha}|{digit}|"_")*       {
                                         yylval.string=strdup(yytext);
-                                        if(isInInts(yylval.string)){
-                                            return INT_VAR;
+                                        switch (getVarType(yylval.string) {
+                                            case variable_type_int_: return INT_VAR;
+                                            case variable_type_double_: return DOUBLE_VAR;
+                                            case variable_type_note_: return NOTE_VAR;
+                                            case variable_type_int_array_: return INT_ARRAY_VAR;
+                                            case variable_type_double_array_: return DOUBLE_ARRAY_VAR;
+                                            case variable_type_note_array_: return NOTE_ARRAY_VAR;
+                                            default: return NEW_ID; // Si no tiene un tipo antes, falla en el yacc
                                         }
-                                        if(isInDoubles(yylval.string)){
-                                            return DOUBLE_VAR;
-                                        }
-                                        if(isInNotes(yylval.string)){
-                                            return NOTE_VAR;
-                                        }
-                                        if(isInIntArrays(yylval.string)){
-                                            return INT_ARRAY_VAR;
-                                        }
-                                        if(isInDoubleArrays(yylval.string)){
-                                            return DOUBLE_ARRAY_VAR;
-                                        }
-                                        if(isInNoteArrays(yylval.string)){
-                                            return NOTE_ARRAY_VAR;
-                                        }
-                                        return NEW_ID; // Si no tiene un tipo antes, falla en el yacc
                                     }
 "//".*                              {/** Comment **/}
 .                                   return yytext[0];

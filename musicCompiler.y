@@ -16,6 +16,7 @@ typedef enum variable_type_t {
     variable_type_int_array_,
     variable_type_double_array_,
     variable_type_note_array_,
+    variable_type_invalid_,
 } variable_type_t;
 
 const variable_type_t variable_type_int = variable_type_int_;
@@ -400,34 +401,9 @@ void freeVars(void){
     sorted_hashmap_free(vars_hashmap);
 }
 
-uint8_t isInInts(char * s){
+variable_type_t getVarType(char * s){
     sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
-    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_int ? 1 : 0;
-}
-
-uint8_t isInDoubles(char * s){
-    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
-    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_double ? 1 : 0;
-}
-
-uint8_t isInNotes(char * s){
-    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
-    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_note ? 1 : 0;
-}
-
-uint8_t isInIntArrays(char * s){
-    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
-    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_int_array ? 1 : 0;
-}
-
-uint8_t isInDoubleArrays(char * s){
-    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
-    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_double_array ? 1 : 0;
-}
-
-uint8_t isInNoteArrays(char * s){
-    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
-    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_note_array ? 1 : 0;
+    return node != NULL ? *((variable_type_t*) sorted_hashmap_get_element(node)) : variable_type_invalid_;
 }
 
 double semitones(int qty){
