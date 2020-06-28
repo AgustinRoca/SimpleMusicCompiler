@@ -20,7 +20,7 @@ bool_op (<|>)=?|==
 
 %%
 
-[\t \n]
+[\t \n \r]
 "bpm"                               {yylval.string=strdup(yytext); return BPM;}
 "volume"                            {yylval.string=strdup(yytext); return VOLUME;}
 "note"                              {yylval.string=strdup(yytext); return NOTE_T;}
@@ -34,7 +34,7 @@ bool_op (<|>)=?|==
 "guitar"                            {yylval.string=strdup(yytext); return GUITAR;}
 "piano"                             {yylval.string=strdup(yytext); return PIANO;}
 "in"                                {yylval.string=strdup(yytext); return IN;}
-"thread_"{digit}+                    {yylval.string=strdup(yytext); return THREAD;}
+"thread_"{digit}+                   {yylval.string=strdup(yytext); return THREAD;}
 {bool_op}                           {yylval.string=strdup(yytext); return BOOL_OP;}
 {digit}+                            {yylval.integer=atoi(yytext); return INTEGER;}
 {double}                            {yylval.decimal=atof(yytext); return DOUBLE;}
