@@ -1,20 +1,20 @@
 # SimpleMusicCompiler
-### compilation
-#### linux
-without debug options:
+### Compilation
+#### Linux
+Without debug options:
 ```sh
 $ make
 ```
-with debug options:
+With debug options:
 ```sh
 $ make debug
 ```
 #### MacOS
-without debug options:
+Without debug options:
 ```sh
 $ make macos
 ```
-with debug options:
+With debug options:
 ```sh
 $ make macos_debug
 ```
