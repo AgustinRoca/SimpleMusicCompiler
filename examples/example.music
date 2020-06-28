@@ -1,0 +1,15 @@
+bpm 180;
+volume 1/2.0;
+note[] notes = [A4, A5, B5];
+int i = 0;
+int j=0;
+while(j<2){
+    i=length(notes) - 1;
+    while (i >= 0) {
+        play notes[i] during 2; // 2 beats
+        play notes[i]+A4 during 1.5; // 1.5 beats
+        play notes[i]+8 during 0.5; // 0.5 beats
+        i--;
+    }
+    j++;
+}

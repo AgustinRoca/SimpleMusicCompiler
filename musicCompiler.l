@@ -1,5 +1,6 @@
 %{
     #include <stdlib.h>
+    #include <math.h>
     #include "musicCompiler.tab.h"
 
     uint8_t isInInts(char * s);
@@ -8,17 +9,18 @@
     uint8_t isInIntArrays(char * s);
     uint8_t isInDoubleArrays(char * s);
     uint8_t isInNoteArrays(char * s);
+    double freq(char * note_name);
 %}
 
 alpha [A-Za-z]
 digit [0-9]
 double -?[0-9]+\.[0-9]+
-note  [A-G]#?[1-8]
+note  [A-G]#?[0-8]
 bool_op (<|>)=?|== 
 
 %%
 
-[\t \n]
+[\t \n \r]
 "bpm"                               {yylval.string=strdup(yytext); return BPM;}
 "volume"                            {yylval.string=strdup(yytext); return VOLUME;}
 "note"                              {yylval.string=strdup(yytext); return NOTE_T;}
@@ -28,11 +30,16 @@ bool_op (<|>)=?|==
 "during"                            {yylval.string=strdup(yytext); return DURING;}
 "while"                             {yylval.string=strdup(yytext); return WHILE;}
 "length"                            {yylval.string=strdup("len"); return LENGTH;}
+"as"                                {yylval.string=strdup(yytext); return AS;}
+"guitar"                            {yylval.string=strdup(yytext); return GUITAR;}
+"piano"                             {yylval.string=strdup(yytext); return PIANO;}
+"in"                                {yylval.string=strdup(yytext); return IN;}
+"thread_"{digit}+                    {yylval.string=strdup(yytext); return THREAD;}
 {bool_op}                           {yylval.string=strdup(yytext); return BOOL_OP;}
 {digit}+                            {yylval.integer=atoi(yytext); return INTEGER;}
 {double}                            {yylval.decimal=atof(yytext); return DOUBLE;}
-"S"                                 {yylval.string=strdup("0"); return NOTE;} /* Importante que este arriba de los IDs! */
-{note}                              {yylval.string=malloc(13); sprintf(yylval.string, "freq(\"%c%s\", %c)", yytext[0], (yytext[1]=='#')?"#":"", (yytext[1]=='#')?yytext[2]:yytext[1]);return NOTE;} /* Importante que este arriba de los IDs! */
+"S"                                 {yylval.decimal=0; return NOTE;} /* Importante que este arriba de los IDs! */
+{note}                              {yylval.decimal=freq(yytext); return NOTE;} /* Importante que este arriba de los IDs! */
 {alpha}({alpha}|{digit}|"_")*       {
                                         yylval.string=strdup(yytext);
                                         if(isInInts(yylval.string)){
@@ -59,3 +66,40 @@ bool_op (<|>)=?|==
 .                                   return yytext[0];
 
 %%
+
+double freq(char * note_name){
+    int base;
+    switch(note_name[0]){
+        case 'A':
+        base = 0;
+        break;
+        case 'B':
+        base = 2;
+        break;
+        case 'C':
+        base = -9;
+        break;
+        case 'D':
+        base = -7;
+        break;
+        case 'E':
+        base = -5;
+        break;
+        case 'F':
+        base = -4;
+        break;
+        case 'G':
+        base = -2;
+        break;
+    }
+    int octet;
+    if(note_name[1] == '#'){
+        base++;
+        octet = note_name[2] - '0';
+    }
+    else{
+        octet = note_name[1] - '0';
+    }
+
+    return 440 * pow(2, base/12.0 + octet-4);
+}

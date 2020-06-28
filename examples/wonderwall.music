@@ -1,0 +1,84 @@
+bpm 87;
+volume 0.125;
+
+int capo = 2;
+note[] guitar_strings = [E2+capo, A2+capo, D3+capo, G3+capo, B3+capo, E4+capo];
+int[] mim_c = [0, 2, 2, 0, 0, 0];
+int[] sol_c = [3, 2, 0, 0, 0, 3];
+int[] re_c = [0, 0, 0, 2, 3, 2];
+int[] la7_c = [0, 0, 2, 0, 3, 0];
+int[] do_c = [0, 3, 2, 0, 3, 0];
+
+note mim = guitar_strings[0] + mim_c[0];
+int i = 1;
+while(i<length(guitar_strings)){
+    mim = mim + guitar_strings[i] + mim_c[i];
+    i++;
+}
+
+note sol = guitar_strings[0] + sol_c[0];
+i = 1;
+while(i<length(guitar_strings)){
+    sol = sol + guitar_strings[i] + sol_c[i];
+    i++;
+}
+
+note re = guitar_strings[2] + re_c[2];
+i = 3;
+while(i<length(guitar_strings)){
+    re = re + guitar_strings[i] + re_c[i];
+    i++;
+}
+
+note la7 = guitar_strings[1] + la7_c[1];
+i = 2;
+while(i<length(guitar_strings)){
+    la7 = la7 + guitar_strings[i] + la7_c[i];
+    i++;
+}
+
+note do = guitar_strings[1] + do_c[1];
+i = 2;
+while(i<length(guitar_strings)){
+    do = do + guitar_strings[i] + do_c[i];
+    i++;
+}
+
+note[] main = [mim, sol, re, la7];
+note[] piano_notes =         [S,    C5,     B4,     A4,     B4,     A4,     B4,     A4,     B4,     B4,     A4,     B4,     A4,     B4,     A4,     B4,     C#5,    A4,     S,      C5,     B4,     A4,     B4,     A4,     B4,     B4,     B4,     B4,     A4,     B4,     B4,     B4,     A4,     B4,     C#5,    A4,     S,      S];
+double[] piano_notes_times = [0.25, 0.5,    1.0,    0.25,   0.25,   0.25,   0.25,   0.25,   0.5,    0.25,   0.25,   0.25,   0.25,   0.25,   0.25,   0.5,    0.25,   2.0,    2.25,   0.5,    0.5,    0.25,   0.25,   0.25,   0.5,    0.25,   0.25,   0.25,   0.25,   0.25,   0.25,   0.25,   0.25,   0.5,    0.25,   2.0,    0.5,    40.0];
+
+i=0;
+while(i<7){
+    play main[0] during 0.5 as guitar;
+    play main[0] during 0.5 as guitar;
+    play main[1] during 0.5 as guitar;
+    play main[1] during 0.25 as guitar;
+    play main[1] during 0.25 as guitar;
+    play main[1] during 0.25 as guitar;
+    play main[1] during 0.25 as guitar;
+    play main[1] during 0.5 as guitar;
+    play main[1] during 0.25 as guitar;
+    play main[2] during 0.5 as guitar;
+    play main[2] during 0.25 as guitar;
+    play main[2] during 0.25 as guitar;
+    play main[2] during 0.25 as guitar;
+    play main[2] during 0.25 as guitar;
+    play main[2] during 0.5 as guitar;
+    play main[3] during 0.5 as guitar;
+    play main[3] during 0.25 as guitar;
+    play main[3] during 0.5 as guitar;
+    play main[3] during 0.5 as guitar;
+    play main[3] during 0.25 as guitar;
+    play main[0] during 0.25 as guitar;
+    play main[0] during 0.25 as guitar;
+    play main[0] during 0.25 as guitar;
+    play main[0] during 0.25 as guitar;
+    i++;
+}
+
+int j=0;
+while(j<length(piano_notes)){
+//    play piano_notes[j] during piano_notes_times[j] in thread_1;
+    j++;
+}

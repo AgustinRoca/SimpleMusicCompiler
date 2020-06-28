@@ -46,14 +46,12 @@ while(i < length(punteo2)){
 // ESTRIBILLO
 i=0;
 while(i < 4){
-    play acorde[0] + punteo[0] during 2;
-    play acorde[0] + punteo[0] during 2;
-    play acorde[1] + punteo[1] during 2;
-    play acorde[1] + punteo[1] during 2;
-    play acorde[2] + punteo[2] during 2;
-    play acorde[2] + punteo[2] during 2;
-    play acorde[3] + punteo[3] during 2;
-    play acorde[3] + punteo[3] during 2;
+    j=0;
+    while(j<length(acorde)){
+        play acorde[j] + punteo[j] during 2;
+        play acorde[j] + punteo[j] during 2;
+        j++;
+    }
     i++;
 }
 i=0;
@@ -91,14 +89,12 @@ while(i < length(punteo2)){
 
 i=0;
 while(i < 4){
-    play acorde[0] + punteo[0] during 2;
-    play acorde[0] + punteo[0] during 2;
-    play acorde[1] + punteo[1] during 2;
-    play acorde[1] + punteo[1] during 2;
-    play acorde[2] + punteo[2] during 2;
-    play acorde[2] + punteo[2] during 2;
-    play acorde[3] + punteo[3] during 2;
-    play acorde[3] + punteo[3] during 2;
+    j=0;
+    while(j<length(acorde)){
+        play acorde[j] + punteo[j] during 2;
+        play acorde[j] + punteo[j] during 2;
+        j++;
+    }
     i++;
 }
 i=0;
@@ -136,14 +132,12 @@ while(i < length(punteo2)){
 
 i=0;
 while(i < 4){
-    play acorde[0] + punteo[0] during 2;
-    play acorde[0] + punteo[0] during 2;
-    play acorde[1] + punteo[1] during 2;
-    play acorde[1] + punteo[1] during 2;
-    play acorde[2] + punteo[2] during 2;
-    play acorde[2] + punteo[2] during 2;
-    play acorde[3] + punteo[3] during 2;
-    play acorde[3] + punteo[3] during 2;
+    j=0;
+    while(j<length(acorde)){
+        play acorde[j] + punteo[j] during 2;
+        play acorde[j] + punteo[j] during 2;
+        j++;
+    }
     i++;
 }
 

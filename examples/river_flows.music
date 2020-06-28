@@ -1,0 +1,300 @@
+bpm 72;
+volume 1/2.0;
+
+note[] right_hand = [A5, G#5, A5, G#5, A5, E5, A5];
+int i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.5;
+    i++;
+}
+
+note[] left_hand = [F#3, C#4];
+i=0;
+while(i<length(left_hand)){
+    play left_hand[i] during 0.5 in thread_1;
+    i++;
+}
+play F#4 during 1 in thread_1;
+left_hand = [D3, A3];
+i=0;
+while(i<length(left_hand)){
+    play left_hand[i] during 0.5 in thread_1;
+    i++;
+}
+play E4 during 5 in thread_1;
+play D5 during 4;
+
+right_hand = [A4, C#5];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+
+right_hand = [A5, G#5, A5, G#5, A5, E5, A5];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.5;
+    i++;
+}
+
+left_hand = [F#3, C#4];
+i=0;
+while(i<length(left_hand)){
+    play left_hand[i] during 0.5 in thread_1;
+    i++;
+}
+play F#4 during 1 in thread_1;
+play D3 during 0.5 in thread_1;
+play A3 during 0.5 in thread_1;
+play E4 during 5 in thread_1;
+play D5 during 4;
+
+right_hand = [A4, C#5];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+
+play A5 during 0.5;
+play G#5 during 0.25;
+play A5 during 0.5;
+play A4 during 0.25;
+play G#5 during 0.25;
+play A5 during 0.5;
+play A4 during 0.25;
+play E5 during 0.25;
+play A5 during 0.5;
+play A4 during 0.25;
+play D5 during 0.25;
+play A4 during 0.125;
+play B4 during 0.125;
+play C#5 during 0.5;
+play D5 during 0.5;
+play E5+A4 during 0.5;
+play C#5 during 0.5;
+play B4 + G#4 during 1.5;
+play A4 during 0.25;
+play G#4 during 0.25;
+play A4 during 1.25;
+play E4 during 0.25;
+play A4 during 0.25;
+play B4 during 0.25;
+play C#5 during 1.5;
+play C#5 during 0.25;
+play D5 during 0.25;
+play E5 during 1.5;
+play D5 during 0.25;
+play C#5 during 0.25;
+play B4 during 1.75;
+play A4 during 0.125;
+play C#5 during 0.125;
+play A5 during 0.5;
+play G#5 during 0.25;
+play A5 during 0.5;
+play A4 during 0.25;
+play G#5 during 0.25;
+play A5 during 0.5;
+play A4 during 0.25;
+play E5 during 0.25;
+play A5 during 0.5;
+play A4 during 0.25;
+play D4 during 0.25;
+play A4 during 0.125;
+play B4 during 0.125;
+
+play F#3 during 0.5 in thread_1;
+play C#4 during 0.5 in thread_1;
+play F#4 during 1 in thread_1;
+play D3 during 0.5 in thread_1;
+play A3 during 0.5 in thread_1;
+play E4 during 0.5 in thread_1;
+play D3 during 0.5 in thread_1;
+play A2 during 0.5 in thread_1;
+play E3 during 0.5 in thread_1;
+play C#4 during 1 in thread_1;
+play E3 during 0.5 in thread_1;
+play B3 during 0.5 in thread_1;
+play E4 during 1 in thread_1;
+play F#3 during 0.5 in thread_1;
+play C#4 during 0.5 in thread_1;
+play F#4 during 1 in thread_1;
+play D3 during 0.5 in thread_1;
+play A3 during 0.5 in thread_1;
+play E4 during 1 in thread_1;
+play A2 during 0.5 in thread_1;
+play E3 during 0.5 in thread_1;
+play C#4 during 1 in thread_1;
+play E3 during 0.5 in thread_1;
+play B3 during 0.5 in thread_1;
+play G#4 during 1 in thread_1;
+play F#3 during 0.5 in thread_1;
+play C#4 during 0.5 in thread_1;
+play F#4 during 1 in thread_1;
+play D3 during 0.5 in thread_1;
+play A3 during 0.5 in thread_1; 
+play E4 during 0.5 in thread_1;
+play D3 during 0.5 in thread_1;
+
+right_hand = [C#5, D5, E5, C#6, B5, E5];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.5;
+    i++;
+}
+
+left_hand = [A2, E3, D4, A2, E3, B3];
+i=0;
+while(i<length(left_hand)){
+    play left_hand[i] during 0.5 in thread_1;
+    i++;
+}
+
+play E5 + B5 during 0.25;
+play C#6 during 0.125;
+play B5 during 0.125;
+play A5 during 0.25;
+play G#5 during 0.25;
+
+play E4 during 1 in thread_1;
+
+play E5 + A5 during 1.5;
+play A4 during 0.25;
+play B4 during 0.25;
+play C#5 during 0.5;
+play E4 during 0.5;
+play A4 during 0.5;
+play C#5 during 0.25;
+play D5 during 0.25;
+play E5 during 0.5;
+play E4 during 0.5;
+play C#5 during 0.5;
+play D5 during 0.25;
+play C#5 during 0.25;
+play B4 during 1;
+
+right_hand = [A5, B5, A5, G#5, A5, A4, E5, A4];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+
+play F#3 during 0.5 in thread_1;
+play C#4 during 0.5 in thread_1;
+play F#4 during 1 in thread_1;
+play D3 during 0.5 in thread_1;
+play A3 during 0.5 in thread_1;
+play E4 during 1 in thread_1;
+play A2 during 0.5 in thread_1;
+play E3 during 0.5 in thread_1;
+play C#4 during 1 in thread_1;
+play E3 during 0.5 in thread_1;
+play B3 during 0.5 in thread_1;
+play E4 during 1 in thread_1;
+
+left_hand = [F#3, C#4, F#4, F#3, D3, A3, E3, D3, A2, E3, C#4, A2, E3, B3, E4, E3, F#3, C#4, F#4, F#3, D3, A3, E4, D3, A2, E3, C#4, A2, E3, B3, E4, E3, F#2, C#3, G#3, F#2, D3, A3, E4, D3, A2, E3, C#4, A2, E2, B2, G#3, E2, F#2, C#3, F#3, F#2, D3, A3, E4, D3, A2, E3, C#4, A2];
+i=0;
+while(i<length(left_hand)){
+    play left_hand[i] during 0.5 in thread_1;
+    i++;
+}
+
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+
+right_hand = [A5, B5, A5, G#5, A5, B5, C#6, D6, E6, C#6, B5, A5];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+play G#5 during 0.5;
+play B4 during 0.5;
+
+right_hand = [A5, B5, A5, G#5, A5, A4, E5, A4];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+right_hand = [A5, B5, A5, G#5, A5, B5, C#6, D6, E6, C#6, B5, A5];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+play G#5 during 0.5;
+play B4 during 0.5;
+
+play A5 during 0.25;
+play A5 during 0.125;
+play B5 during 0.125;
+right_hand = [A5, G#5, A5, A4, E5, A4];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+
+play A5 during 0.25;
+play A5 during 0.125;
+play B5 during 0.125;
+right_hand = [A5, G#5, A5, A4, E5, A4];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+
+right_hand = [A5, B5, A5, G#5, A5, B5, C#6, D6, E6, C#6, B5, A5];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+play G#5 during 0.5;
+play B5 during 0.5;
+
+play A5 during 0.25;
+play A5 during 0.125;
+play B5 during 0.125;
+right_hand = [A5, G#5, A5, A4, E5, A4];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+
+play A5 during 0.25;
+play A5 during 0.125;
+play B5 during 0.125;
+right_hand = [A5, G#5, A5, A4, E5, A4];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+} 
+
+right_hand = [A5, B5, A5, G#5, A5, B5, C#6, D6, E6, C#6, B5, A5];
+i=0;
+while(i<length(right_hand)){
+    play right_hand[i] during 0.25;
+    i++;
+}
+play G#5 during 1;
+play B4 during 1.5;
+play G#4 during 1.5;
+play E4 during 3;
+play E2 during 1 in thread_1;
+play B2 during 1.5 in thread_1;
+play G#3 during 4.5 in thread_1;

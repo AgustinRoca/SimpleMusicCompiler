@@ -13,7 +13,7 @@ OUTPUT = compiler
 OUTPUT_FILES_C = $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c
 OUTPUT_FILES_H = $(YACC_OUT_FILE).h
 OUTPUT_FILES_O = $(OUTPUT_FILES_C:.c=.o)
-OUTPUT_FILES = $(OUTPUT_FILES_C) $(OUTPUT_FILES_H) $(OUTPUT_FILES_O) $(OUTPUT)
+OUTPUT_FILES = $(OUTPUT_FILES_C) $(OUTPUT_FILES_H) $(OUTPUT_FILES_O) $(OUTPUT) musicCompiler.output
 
 # Flags
 YACC_FLAGS = -d
@@ -21,7 +21,7 @@ LEX_FLAGS =
 YACC_DEBUG = --verbose --debug
 LEX_DEBUG = -d
 CC_FLAGS = -ly
-
+CC_FLAGS_LINUX = -lm
 
 all: $(OUTPUT)
 	
@@ -46,6 +46,15 @@ debug:
 	$(YACC) $(YACC_FLAGS) $(YACC_DEBUG) $(FILE_Y)
 	$(LEX) $(LEX_FLAGS) $(LEX_DEBUG) $(FILE_L)
 	$(CC) $(CC_FLAGS) -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c
+
+linux:
+	$(YACC) $(YACC_FLAGS) $(FILE_Y)
+	$(LEX) $(LEX_FLAGS) $(FILE_L)
+	$(CC) -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c $(CC_FLAGS_LINUX)
+linux_debug:
+	$(YACC) $(YACC_FLAGS) $(YACC_DEBUG) $(FILE_Y)
+	$(LEX) $(LEX_FLAGS) $(LEX_DEBUG) $(FILE_L)
+	$(CC) -g -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c $(CC_FLAGS_LINUX)
 
 clean:
 	rm -f $(OUTPUT_FILES)
