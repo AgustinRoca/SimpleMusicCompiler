@@ -21,7 +21,7 @@ YACC_FLAGS = -d
 LEX_FLAGS =
 YACC_DEBUG = --verbose --debug
 LEX_DEBUG = -d
-CC_FLAGS = -lm
+CC_FLAGS = -lm -pedantic -std=c99 -Wall
 CC_FLAGS_MACOS = -ly
 
 all: $(OUTPUT)
