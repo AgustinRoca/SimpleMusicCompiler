@@ -11,7 +11,10 @@
 alpha [A-Za-z]
 digit [0-9]
 double -?[0-9]+\.[0-9]+
-note  [A-G]#?[0-8]
+
+/* Mi (E) y Si (B) no tienen sostenido (#) */
+note  ([ACDFG]#?|[BE])[0-8]
+
 bool_op (<|>)=?|== 
 
 %%
