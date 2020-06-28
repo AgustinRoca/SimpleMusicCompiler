@@ -402,7 +402,6 @@ void freeVars(void){
 
 uint8_t isInInts(char * s){
     sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
-    printf("%s: %d", node == NULL ? "NULL" : s, node == NULL ? -1 : *((variable_type_t*) sorted_hashmap_get_element(node)));
     return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_int ? 1 : 0;
 }
 
