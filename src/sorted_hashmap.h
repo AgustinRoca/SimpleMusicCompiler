@@ -20,7 +20,7 @@ typedef uint64_t hash_t;
  * @param element
  * @return el nodo creado | NULL
  */
-sorted_hashmap_t sorted_hashmap_create(uint64_t initial_overflow_length);
+sorted_hashmap_t sorted_hashmap_create();
 
 /**
  * Busca un elemento
@@ -36,7 +36,7 @@ sorted_hashmap_node sorted_hashmap_find(sorted_hashmap_t hashmap, void *key);
  * @param key
  * @return node
  */
-sorted_hashmap_node sorted_hashmap_add(sorted_hashmap_t hashmap, void *key, void *value);
+sorted_hashmap_node sorted_hashmap_add(sorted_hashmap_t hashmap, void *key, const void *value);
 
 /**
  * Obtiene el elemento asociado a un nodo
@@ -90,37 +90,5 @@ bool sorted_hashmap_set_hasher(sorted_hashmap_t hashmap, hash_t (hasher)(void *k
  * @return
  */
 bool sorted_hashmap_set_freer(sorted_hashmap_t hashmap, void (freer)(void *key, void *value));
-
-/**
- * Crea una lista con todos los nodos
- */
-sorted_hashmap_list_t sorted_hashmap_get_values(sorted_hashmap_t hashmap);
-
-/**
- * Devuelve el primer elemento en la lista
- * @param list
- * @return
- */
-sorted_hashmap_list_node_t sorted_hashmap_list_get_first(sorted_hashmap_list_t list);
-
-/**
- * Devuelve el siguiente nodo si es que existe, o NULL
- * @param node
- * @return
- */
-sorted_hashmap_list_node_t sorted_hashmap_list_get_next_node(sorted_hashmap_list_node_t node);
-
-/**
- * Devuelve el elemento asociado
- * @param node
- * @return
- */
-void *sorted_hashmap_list_get_element(sorted_hashmap_list_node_t node);
-
-/**
- * Elimina los recursos ocupados por una lista
- * @param list
- */
-void sorted_hashmap_list_free(sorted_hashmap_list_t list);
 
 #endif //PC_2020A_6_TPE_SOCKSV5_SORTED_HASHMAP_H

@@ -122,13 +122,13 @@ sorted_hashmap_node sorted_hashmap_find(sorted_hashmap_t hashmap, void *key) {
  * @param hashmap
  * @param node
  */
-sorted_hashmap_node sorted_hashmap_add(sorted_hashmap_t hashmap, void *key, void *value) {
+sorted_hashmap_node sorted_hashmap_add(sorted_hashmap_t hashmap, void *key, const void *value) {
     if (hashmap == NULL || key == NULL) return NULL;
     if (hashmap->hasher == NULL || hashmap->cmp == NULL) return NULL;
 
     hash_t hash = hashmap->hasher(key);
     enum added_node_status status;
-    sorted_hashmap_node node = sorted_hashmap_add_(hashmap, hashmap->overflow_nodes, hashmap->overflow_nodes_length, key, hash, value, &status);
+    sorted_hashmap_node node = sorted_hashmap_add_(hashmap, hashmap->overflow_nodes, hashmap->overflow_nodes_length, key, hash, (void *) value, &status);
     if (status == added_node_status_added_first_node) {
         hashmap->overflow_nodes_taken_length++;
         hashmap->total_nodes++;
@@ -308,7 +308,7 @@ static void sorted_hashmap_increase(sorted_hashmap_t hashmap) {
     for (uint64_t i = 0; i < hashmap->overflow_nodes_length; i++) {
         sorted_hashmap_node node = hashmap->overflow_nodes[i];
         while (node != NULL) {
-            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->value, node->hash, NULL);
+            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->value, node->hash, node->value, NULL);
             node = node->next;
         }
     }
@@ -341,7 +341,7 @@ static void sorted_hashmap_decrease(sorted_hashmap_t hashmap) {
     for (uint64_t i = 0; i < hashmap->overflow_nodes_length; i++) {
         sorted_hashmap_node node = hashmap->overflow_nodes[i];
         while (node != NULL) {
-            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->value, node->hash, NULL);
+            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->value, node->hash, node->value, NULL);
             node = node->next;
         }
     }
@@ -368,10 +368,14 @@ static sorted_hashmap_node sorted_hashmap_add_(sorted_hashmap_t hashmap, sorted_
     if (starting_node == NULL) {
         /** Tenemos que insertar aca */
         new_node = calloc(sizeof(*new_node), 1);
-        if (new_node == NULL) return NULL;
+        if (new_node == NULL) {
+            if (state != NULL) *state = added_node_status_not_added;
+            return NULL;
+        }
         overflow_nodes[index] = new_node;
         new_node->next = NULL;
         new_node->previous = NULL;
+        if (state != NULL) *state = added_node_status_added_first_node;
     } else {
         sorted_hashmap_node previous_node = sorted_hashmap_find_previous_inserting_node_(hashmap, starting_node, key);
         if (previous_node != NULL && hashmap->cmp(previous_node->key, key) == 0) {
@@ -388,15 +392,15 @@ static sorted_hashmap_node sorted_hashmap_add_(sorted_hashmap_t hashmap, sorted_
             starting_node->previous = new_node;
             new_node->previous = NULL;
             overflow_nodes[index] = new_node;
-            if (state != NULL) *state = added_node_status_added_first_node;
         } else {
             new_node->previous = previous_node;
             new_node->next = previous_node->next;
             if (previous_node->next != NULL)
                 previous_node->next->previous = new_node;
             previous_node->next = new_node;
-            if (state != NULL) *state = added_node_status_added_existing_node;
         }
+
+        if (state != NULL) *state = added_node_status_added_existing_node;
     }
 
     new_node->key = key;

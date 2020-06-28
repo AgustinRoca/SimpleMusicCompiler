@@ -5,6 +5,7 @@ LEX = flex
 
 # Files
 NAME = musicCompiler
+SORTED_HASHMAP_FILE = src/sorted_hashmap
 FILE_Y = $(NAME).y
 FILE_L = $(NAME).l
 LEX_OUT_FILE = lex.yy
@@ -31,6 +32,9 @@ $(OUTPUT): $(OUTPUT_FILES_O)
 $(YACC_OUT_FILE).o: $(YACC_OUT_FILE).c
 	$(CC) -c $(YACC_OUT_FILE).c
 
+$(SORTED_HASHMAP_FILE).o: $(SORTED_HASHMAP_FILE).c
+	$(CC) -c $(SORTED_HASHMAP_FILE).c
+
 $(LEX_OUT_FILE).o: $(LEX_OUT_FILE).c
 	$(CC) -c $(LEX_OUT_FILE).c
 
@@ -45,16 +49,16 @@ $(YACC_OUT_FILE).c:
 debug:
 	$(YACC) $(YACC_FLAGS) $(YACC_DEBUG) $(FILE_Y)
 	$(LEX) $(LEX_FLAGS) $(LEX_DEBUG) $(FILE_L)
-	$(CC) $(CC_FLAGS) -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c
+	$(CC) $(CC_FLAGS) -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c $(SORTED_HASHMAP_FILE).c
 
 linux:
 	$(YACC) $(YACC_FLAGS) $(FILE_Y)
 	$(LEX) $(LEX_FLAGS) $(FILE_L)
-	$(CC) -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c $(CC_FLAGS_LINUX)
+	$(CC) -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c $(CC_FLAGS_LINUX) $(SORTED_HASHMAP_FILE).c
 linux_debug:
 	$(YACC) $(YACC_FLAGS) $(YACC_DEBUG) $(FILE_Y)
 	$(LEX) $(LEX_FLAGS) $(LEX_DEBUG) $(FILE_L)
-	$(CC) -g -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c $(CC_FLAGS_LINUX)
+	$(CC) -g -o $(OUTPUT) $(LEX_OUT_FILE).c $(YACC_OUT_FILE).c $(CC_FLAGS_LINUX) $(SORTED_HASHMAP_FILE).c
 
 clean:
 	rm -f $(OUTPUT_FILES)
