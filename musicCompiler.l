@@ -20,7 +20,7 @@ bool_op (<|>)=?|==
 
 %%
 
-[\t \n]
+[\t \n \r]
 "bpm"                               {yylval.string=strdup(yytext); return BPM;}
 "volume"                            {yylval.string=strdup(yytext); return VOLUME;}
 "note"                              {yylval.string=strdup(yytext); return NOTE_T;}
