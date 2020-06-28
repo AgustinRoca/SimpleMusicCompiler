@@ -373,27 +373,27 @@ void indent(char* s, int n){
 }
 
 void addToInts(char * s){
-    sorted_hashmap_add(vars_hashmap, s, &variable_type_int);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_int);
 }
 
 void addToDoubles(char * s){
-    sorted_hashmap_add(vars_hashmap, s, &variable_type_double);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_double);
 }
 
 void addToNotes(char * s){
-    sorted_hashmap_add(vars_hashmap, s, &variable_type_note);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_note);
 }
 
 void addToIntArrays(char * s){
-    sorted_hashmap_add(vars_hashmap, s, &variable_type_int_array);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_int_array);
 }
 
 void addToDoubleArrays(char * s){
-    sorted_hashmap_add(vars_hashmap, s, &variable_type_double_array);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_double_array);
 }
 
 void addToNoteArrays(char * s){
-    sorted_hashmap_add(vars_hashmap, s, &variable_type_note_array);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_note_array);
 }
 
 void freeVars(void){
