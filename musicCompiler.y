@@ -260,14 +260,14 @@ int main() {
     char * result; // esta bien que no este inicializada, se inicializa en yyparse
     vars_hashmap = sorted_hashmap_create();
     if (vars_hashmap == NULL) {
-        return -1; // TODO
+        return -1;
     }
 
     sorted_hashmap_set_hasher(vars_hashmap, vars_hasher_hasher);
     sorted_hashmap_set_cmp(vars_hashmap, vars_hasher_cmp);
     sorted_hashmap_set_freer(vars_hashmap, vars_hasher_freer);
 
-    addThread("thread_0");
+    addThread("thread_0"); // Es el thread por default
     int error = yyparse(&result);
     if(error){
         freeThreads();
@@ -356,7 +356,8 @@ void yyerror (char ** result, const char *s){
     exit(1);
 }
 
-void indent(char* s, int n){
+/* Agrega n tabs al principio de s */
+void indent(char* s, int n){ 
     for (int i = 0; i < n; i++){
         memmove(s + 1, s, strlen(s) + 1);
         memcpy(s, "\t", 1);
@@ -396,10 +397,6 @@ variable_type_t getVarType(char * s){
     return node != NULL ? *((variable_type_t*) sorted_hashmap_get_element(node)) : variable_type_invalid_;
 }
 
-double semitones(int qty){
-    return pow(2, qty/12.0);
-}
-
 void addThread(char * s){
     if(isNewThread(s)){
         if(threads_length % CHUNK == 0){
@@ -418,7 +415,7 @@ int isNewThread(char * s){
     return 1;
 }
 
-char *init_threads(){
+char * init_threads(){
     int threads_names_lengths = 0;
     for(int i=0; i<threads_length; i++){
         threads_names_lengths += strlen(threads[i]);
