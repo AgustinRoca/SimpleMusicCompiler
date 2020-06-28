@@ -5,7 +5,7 @@ LEX = flex
 
 # Files
 NAME = musicCompiler
-SORTED_HASHMAP_FILE = src/sorted_hashmap
+SORTED_HASHMAP_FILE = utils/sorted_hashmap
 FILE_Y = $(NAME).y
 FILE_L = $(NAME).l
 LEX_OUT_FILE = lex.yy

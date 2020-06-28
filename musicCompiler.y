@@ -5,19 +5,10 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "src/sorted_hashmap.h"
+#include "utils/sorted_hashmap.h"
+#include "utils/variable_types.h"
 
 #define CHUNK 10
-
-typedef enum variable_type_t {
-    variable_type_int_,
-    variable_type_double_,
-    variable_type_note_,
-    variable_type_int_array_,
-    variable_type_double_array_,
-    variable_type_note_array_,
-    variable_type_invalid_,
-} variable_type_t;
 
 const variable_type_t variable_type_int = variable_type_int_;
 const variable_type_t variable_type_double = variable_type_double_;
