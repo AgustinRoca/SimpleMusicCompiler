@@ -221,7 +221,7 @@ BOOLEAN_VAL         : INT_STRING BOOL_OP INT_STRING {$<string>$ = malloc(strlen(
                     | '(' BOOLEAN_VAL ')' {$<string>$ = malloc(strlen($<string>2) + 3); sprintf($<string>$, "(%s)", $<string>2); free($<string>2);}
 
 LINE                : LINE_P LINE {$<string>$ = malloc(strlen($<string>1) +  strlen($<string>2) + 1 + tab_qty);sprintf($<string>$, "%s%s", $<string>1, $<string>2); free($<string>1); free($<string>2);}
-                    | LINE_P {$<string>$ = $<string>1}
+                    | LINE_P {$<string>$ = $<string>1;}
 
 LINE_P              : EXPRESION ';' {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty); sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty); free($<string>1);}
                     | WHILE_LOOP {$<string>$ = malloc(strlen($<string>1) + 2 + tab_qty);sprintf($<string>$, "%s\n", $<string>1); indent($<string>$, tab_qty); free($<string>1);}
