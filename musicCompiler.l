@@ -2,6 +2,7 @@
     #include <stdlib.h>
     #include <math.h>
     #include "musicCompiler.tab.h"
+    #include "utils/variable_types.h"
 
     variable_type_t getVarType(char * s);
     double freq(char * note_name);
@@ -38,7 +39,7 @@ bool_op (<|>)=?|==
 {note}                              {yylval.decimal=freq(yytext); return NOTE;} /* Importante que este arriba de los IDs! */
 {alpha}({alpha}|{digit}|"_")*       {
                                         yylval.string=strdup(yytext);
-                                        switch (getVarType(yylval.string) {
+                                        switch (getVarType(yylval.string)) {
                                             case variable_type_int_: return INT_VAR;
                                             case variable_type_double_: return DOUBLE_VAR;
                                             case variable_type_note_: return NOTE_VAR;
