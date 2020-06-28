@@ -23,6 +23,7 @@ void freeVars(void);
 char * init_threads();
 char * thread_list();
 void freeThreads();
+char * closing_parenthesis_threads();
 
 int yydebug=1;
 int tab_qty=0;
@@ -289,7 +290,7 @@ int main() {
                     "\n"
                     "%s\n"
                     "%s\n"
-                    "play(np.asarray(list(map(add, %s, np.zeros(len(thread_0))))))\n", init_threads(), result, thread_list());
+                    "play(np.asarray(list(map(add, %s, np.zeros(len(thread_0))))%s\n", init_threads(), result, thread_list(), closing_parenthesis_threads());
     fclose(outfile);
     free(result);
     freeVars();
@@ -473,13 +474,13 @@ char * thread_list(){
     for(int i=0; i<threads_length; i++){
         threads_names_lengths += strlen(threads[i]);
     }
-    char * ans = malloc(sizeof(*ans) * (threads_names_lengths + (threads_length - 1)* 2 + 1));
+    char * ans = malloc(sizeof(*ans) * (threads_names_lengths + (threads_length - 1)* 16 + 1));
     int ans_current_length = 0;
     sprintf(ans, "%s", threads[0]);
     ans_current_length += strlen(threads[0]);
     for(int i=1; i<threads_length; i++){
-        sprintf(ans + ans_current_length, ", %s", threads[i]);
-        ans_current_length += strlen(threads[i]) + 2;
+        sprintf(ans + ans_current_length, ", list(map(add, %s", threads[i]);
+        ans_current_length += strlen(threads[i]) + 17;
     }
     return ans;
 }
@@ -489,4 +490,14 @@ void freeThreads(){
         free(threads[i]);
     }
     free(threads);
+}
+
+char * closing_parenthesis_threads(){
+    char * ans = malloc((2*threads_length + 1) * sizeof(*ans));
+    for(int i=0; i<2*threads_length; i+=2){
+        ans[i] = ')';
+        ans[i+1] = ')';
+    }
+    ans[2*threads_length] = '\0';
+    return ans;
 }
