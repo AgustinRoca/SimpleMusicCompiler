@@ -5,7 +5,25 @@
 #include <stdint.h>
 #include <math.h>
 
+#include "src/sorted_hashmap.h"
+
 #define CHUNK 10
+
+typedef enum variable_type_t {
+    variable_type_int_,
+    variable_type_double_,
+    variable_type_note_,
+    variable_type_int_array_,
+    variable_type_double_array_,
+    variable_type_note_array_,
+} variable_type_t;
+
+const variable_type_t variable_type_int = variable_type_int_;
+const variable_type_t variable_type_double = variable_type_double_;
+const variable_type_t variable_type_note = variable_type_note_;
+const variable_type_t variable_type_int_array = variable_type_int_array_;
+const variable_type_t variable_type_double_array = variable_type_double_array_;
+const variable_type_t variable_type_note_array = variable_type_note_array_;
 
 int yylex();
 void yylex_destroy();
@@ -26,21 +44,27 @@ char * thread_list();
 void freeThreads();
 char * closing_parenthesis_threads();
 
+hash_t vars_hasher_hasher(void *key);
+int8_t vars_hasher_cmp(void *k1, void *k2);
+void vars_hasher_freer(void *key, void *value);
+
 int yydebug=1;
 int tab_qty=0;
 
-char ** int_vars = NULL;
-size_t int_vars_length = 0;
-char ** double_vars = NULL;
-size_t double_vars_length = 0;
-char ** note_vars = NULL;
-size_t note_vars_length = 0;
-char ** int_array_vars = NULL;
-size_t int_array_vars_length = 0;
-char ** double_array_vars = NULL;
-size_t double_array_vars_length = 0;
-char ** note_array_vars = NULL;
-size_t note_array_vars_length = 0;
+sorted_hashmap_t vars_hashmap = NULL;
+
+//char ** int_vars = NULL;
+//size_t int_vars_length = 0;
+//char ** double_vars = NULL;
+//size_t double_vars_length = 0;
+//char ** note_vars = NULL;
+//size_t note_vars_length = 0;
+//char ** int_array_vars = NULL;
+//size_t int_array_vars_length = 0;
+//char ** double_array_vars = NULL;
+//size_t double_array_vars_length = 0;
+//char ** note_array_vars = NULL;
+//size_t note_array_vars_length = 0;
 
 char ** threads = NULL;
 size_t threads_length = 0;
@@ -213,6 +237,8 @@ NOTE_VAL            : NOTE {$<string>$ = malloc(20 + 3); sprintf($<string>$, "[%
                     | NOTE_VAL '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
                     | NOTE_VAL '-' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
                     | NOTE_VAR {$<string>$ = $<string>1;}
+                    | '(' NOTE_VAL ')' {$<string>$ = malloc(strlen($<string>2) + 3); sprintf($<string>$, "(%s)", $<string>2); free($<string>2);}
+
 
 BOOLEAN_VAL         : INT_STRING BOOL_OP INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3);}
                     | DOUBLE_STRING BOOL_OP INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>2) + strlen($<string>3) + 3); sprintf($<string>$, "%s %s %s", $<string>1, $<string>2, $<string>3); free($<string>1); free($<string>2); free($<string>3);}
@@ -232,14 +258,24 @@ LINE_P              : EXPRESION ';' {$<string>$ = malloc(strlen($<string>1) + 2 
 
 %%
 
+
 int yywrap()
 {
     return 1;
-} 
+}
 
 int main() {
     yydebug=1;
     char * result; // esta bien que no este inicializada, se inicializa en yyparse
+    vars_hashmap = sorted_hashmap_create();
+    if (vars_hashmap == NULL) {
+        return -1; // TODO
+    }
+
+    sorted_hashmap_set_hasher(vars_hashmap, vars_hasher_hasher);
+    sorted_hashmap_set_cmp(vars_hashmap, vars_hasher_cmp);
+    sorted_hashmap_set_freer(vars_hashmap, vars_hasher_freer);
+
     addThread("thread_0");
     int error = yyparse(&result);
     if(error){
@@ -325,8 +361,8 @@ int main() {
 }
 
 void yyerror (char ** result, const char *s){
-  printf ("%s\n", s);
-  exit(1);
+    printf ("%s\n", s);
+    exit(1);
 }
 
 void indent(char* s, int n){
@@ -337,126 +373,61 @@ void indent(char* s, int n){
 }
 
 void addToInts(char * s){
-    if(int_vars_length % CHUNK == 0){
-        int_vars = realloc(int_vars, sizeof(*int_vars) * (int_vars_length + CHUNK));
-    }
-    int_vars[int_vars_length++] = strdup(s);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_int);
 }
 
 void addToDoubles(char * s){
-    if(double_vars_length % CHUNK == 0){
-        double_vars = realloc(double_vars, sizeof(*double_vars) * (double_vars_length + CHUNK));
-    }
-    double_vars[double_vars_length++] = strdup(s);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_double);
 }
 
 void addToNotes(char * s){
-    if(note_vars_length % CHUNK == 0){
-        note_vars = realloc(note_vars, sizeof(*note_vars) * (note_vars_length + CHUNK));
-    }
-    note_vars[note_vars_length++] = strdup(s);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_note);
 }
 
 void addToIntArrays(char * s){
-    if(int_array_vars_length % CHUNK == 0){
-        int_array_vars = realloc(int_array_vars, sizeof(*int_array_vars) * (int_array_vars_length + CHUNK));
-    }
-    int_array_vars[int_array_vars_length++] = strdup(s);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_int_array);
 }
 
 void addToDoubleArrays(char * s){
-    if(double_array_vars_length % CHUNK == 0){
-        double_array_vars = realloc(double_array_vars, sizeof(*double_array_vars) * (double_array_vars_length + CHUNK));
-    }
-    double_array_vars[double_array_vars_length++] = strdup(s);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_double_array);
 }
 
 void addToNoteArrays(char * s){
-    if(note_array_vars_length % CHUNK == 0){
-        note_array_vars = realloc(note_array_vars, sizeof(*note_array_vars) * (note_array_vars_length + CHUNK));
-    }
-    note_array_vars[note_array_vars_length++] = strdup(s);
+    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_note_array);
 }
 
 void freeVars(void){
-    for(int i=0; i<int_vars_length; i++){
-        free(int_vars[i]);
-    }
-    free(int_vars);
-    for(int i=0; i<double_vars_length; i++){
-        free(double_vars[i]);
-    }
-    free(double_vars);
-    for(int i=0; i<note_vars_length; i++){
-        free(note_vars[i]);
-    }
-    free(note_vars);
-    for(int i=0; i<int_array_vars_length; i++){
-        free(int_array_vars[i]);
-    }
-    free(int_array_vars);
-    for(int i=0; i<double_array_vars_length; i++){
-        free(double_array_vars[i]);
-    }
-    free(double_array_vars);
-    for(int i=0; i<note_array_vars_length; i++){
-        free(note_array_vars[i]);
-    }
-    free(note_array_vars);
+    sorted_hashmap_free(vars_hashmap);
 }
 
 uint8_t isInInts(char * s){
-    for(int i=0; i<int_vars_length; i++){
-        if(strcmp(int_vars[i], s) == 0){
-            return 1;
-        }
-    }
-    return 0;
+    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
+    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_int ? 1 : 0;
 }
 
 uint8_t isInDoubles(char * s){
-    for(int i=0; i<double_vars_length; i++){
-        if(strcmp(double_vars[i], s) == 0){
-            return 1;
-        }
-    }
-    return 0;
+    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
+    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_double ? 1 : 0;
 }
 
 uint8_t isInNotes(char * s){
-    for(int i=0; i<note_vars_length; i++){
-        if(strcmp(note_vars[i], s) == 0){
-            return 1;
-        }
-    }
-    return 0;
+    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
+    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_note ? 1 : 0;
 }
 
 uint8_t isInIntArrays(char * s){
-    for(int i=0; i<int_array_vars_length; i++){
-        if(strcmp(int_array_vars[i], s) == 0){
-            return 1;
-        }
-    }
-    return 0;
+    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
+    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_int_array ? 1 : 0;
 }
 
 uint8_t isInDoubleArrays(char * s){
-    for(int i=0; i<double_array_vars_length; i++){
-        if(strcmp(double_array_vars[i], s) == 0){
-            return 1;
-        }
-    }
-    return 0;
+    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
+    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_double_array ? 1 : 0;
 }
 
 uint8_t isInNoteArrays(char * s){
-    for(int i=0; i<note_array_vars_length; i++){
-        if(strcmp(note_array_vars[i], s) == 0){
-            return 1;
-        }
-    }
-    return 0;
+    sorted_hashmap_node node = sorted_hashmap_find(vars_hashmap, s);
+    return node != NULL && *((variable_type_t*) sorted_hashmap_get_element(node)) == variable_type_note_array ? 1 : 0;
 }
 
 double semitones(int qty){
@@ -526,4 +497,23 @@ char * closing_parenthesis_threads(){
     }
     ans[2*threads_length] = '\0';
     return ans;
+}
+
+hash_t vars_hasher_hasher(void *key) {
+    const char *s = key;
+
+    /** See https://stackoverflow.com/a/7666577 */
+    hash_t hash = GENERIC_INITIAL_HASH_VALUE;
+    uint8_t c;
+    while ((c = *s++)) hash = ((hash << GENERIC_SHIFT_HASH_VALUE) + hash) + c; /* hash * 33 + c */
+
+    return hash;
+}
+
+int8_t vars_hasher_cmp(void *k1, void *k2) {
+    return strcmp((char *) k1, (char *) k2);
+}
+
+void vars_hasher_freer(void *key, void *value) {
+    free(key);
 }
