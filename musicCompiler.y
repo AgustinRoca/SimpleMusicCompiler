@@ -236,6 +236,10 @@ int main() {
         return error;
     }
     FILE * outfile = fopen("out.py", "w");
+    char * initThreads = init_threads();
+    char * threadList = thread_list();
+    char * closingParenthesisThreads = closing_parenthesis_threads();
+
     fprintf(outfile,"from operator import add\n"
                     "import numpy as np\n"
                     "import simpleaudio as sa\n"
@@ -295,9 +299,12 @@ int main() {
                     "\n"
                     "%s\n"
                     "%s\n"
-                    "play(np.asarray(list(map(add, %s, np.zeros(len(thread_0))))%s\n", init_threads(), result, thread_list(), closing_parenthesis_threads());
+                    "play(np.asarray(list(map(add, %s, np.zeros(len(thread_0))))%s\n", initThreads, result, threadList, closingParenthesisThreads);
     fclose(outfile);
     free(result);
+    free(initThreads);
+    free(threadList);
+    free(closingParenthesisThreads);
     freeVars();
     freeThreads();
     return 0;
