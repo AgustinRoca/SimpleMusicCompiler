@@ -76,9 +76,3 @@ while(i<7){
     play main[0] during 0.25 as guitar;
     i++;
 }
-
-int j=0;
-while(j<length(piano_notes)){
-//    play piano_notes[j] during piano_notes_times[j] in thread_1;
-    j++;
-}
