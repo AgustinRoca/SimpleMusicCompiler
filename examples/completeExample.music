@@ -1,0 +1,34 @@
+bpm 60;
+volume 0.5;
+
+note la4 = A4;
+int i = 0;
+int j = 0;
+double beat = 0.125;
+while(i<12*2){
+    if((i/2.0) == j){
+        play la4 + j during beat*i;
+        play S during beat*i in thread_1;
+        j++;
+    }
+    i++;
+}
+
+play S during 4;
+play S during 4 in thread_1;
+
+note[] notes = [A4, A5, G#5, B5];
+double[] beats = [0.5, 0.25, 0.25, 0.5, 0.5];
+int[] index = [0, 2, 3, 1, 2];
+
+volume 0.125;
+i = 0;
+while(i < 3){
+    j=0;
+    while(j<length(beats)){
+        play notes[index[j]] during beats[j];
+        play notes[index[i]] during beats[j] as guitar in thread_1;
+        j++;
+    }
+    i++;
+}
