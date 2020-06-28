@@ -8,6 +8,7 @@
 #define CHUNK 10
 
 int yylex();
+void yylex_destroy();
 void yyerror(char ** result, const char *s);
 double semitones(int qty);
 void indent(char * s, int n);
@@ -307,6 +308,7 @@ int main() {
     free(closingParenthesisThreads);
     freeVars();
     freeThreads();
+    yylex_destroy();
     return 0;
 }
 
