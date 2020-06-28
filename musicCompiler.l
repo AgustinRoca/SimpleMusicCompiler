@@ -28,6 +28,7 @@ bool_op (<|>)=?|==
 "double"                            {yylval.string=strdup(yytext); return DOUBLE_T;}
 "play"                              {yylval.string=strdup(yytext); return PLAY;}
 "during"                            {yylval.string=strdup(yytext); return DURING;}
+"if"                                {yylval.string=strdup(yytext); return IF;}
 "while"                             {yylval.string=strdup(yytext); return WHILE;}
 "length"                            {yylval.string=strdup("len"); return LENGTH;}
 "as"                                {yylval.string=strdup(yytext); return AS;}
