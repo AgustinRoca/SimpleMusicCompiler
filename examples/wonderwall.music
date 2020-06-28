@@ -55,7 +55,6 @@ while(i<7){
     play main[1] during 0.25 as guitar;
     play main[1] during 0.25 as guitar;
     play main[1] during 0.5 as guitar;
-    play main[1] during 0.25 as guitar;
     play main[2] during 0.5 as guitar;
     play main[2] during 0.25 as guitar;
     play main[2] during 0.25 as guitar;
