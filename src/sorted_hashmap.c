@@ -288,7 +288,8 @@ static void sorted_hashmap_free_starting_node_(sorted_hashmap_t hashmap, sorted_
         next_node = node->next;
         if (hashmap->freer != NULL) hashmap->freer(node->key, node->value);
         free(node);
-    } while (next_node != NULL);
+        node = next_node;
+    } while (node != NULL);
 }
 
 /**
@@ -306,13 +307,16 @@ static void sorted_hashmap_increase(sorted_hashmap_t hashmap) {
     }
 
     for (uint64_t i = 0; i < hashmap->overflow_nodes_length; i++) {
-        sorted_hashmap_node node = hashmap->overflow_nodes[i];
+        sorted_hashmap_node aux, node = hashmap->overflow_nodes[i];
         while (node != NULL) {
-            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->value, node->hash, node->value, NULL);
-            node = node->next;
+            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->key, node->hash, node->value, NULL);
+            aux = node->next;
+            free(node);
+            node = aux;
         }
     }
 
+    free(hashmap->overflow_nodes);
     hashmap->overflow_nodes = new_overflow_nodes;
     hashmap->overflow_nodes_length = new_size;
 }
@@ -339,13 +343,16 @@ static void sorted_hashmap_decrease(sorted_hashmap_t hashmap) {
     }
 
     for (uint64_t i = 0; i < hashmap->overflow_nodes_length; i++) {
-        sorted_hashmap_node node = hashmap->overflow_nodes[i];
+        sorted_hashmap_node aux, node = hashmap->overflow_nodes[i];
         while (node != NULL) {
-            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->value, node->hash, node->value, NULL);
-            node = node->next;
+            sorted_hashmap_add_(hashmap, new_overflow_nodes, new_size, node->key, node->hash, node->value, NULL);
+            aux = node->next;
+            free(node);
+            node = aux;
         }
     }
 
+    free(hashmap->overflow_nodes);
     hashmap->overflow_nodes = new_overflow_nodes;
     hashmap->overflow_nodes_length = new_size;
 }
