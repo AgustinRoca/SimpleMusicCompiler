@@ -1,8 +1,11 @@
 bpm 87;
 volume 0.125;
 
+// Traste sobre el que va el capo
 int capo = 2;
+// Afinacion de las cuerdas de la guitarra
 note[] guitar_strings = [E2+capo, A2+capo, D3+capo, G3+capo, B3+capo, E4+capo];
+// Las posiciones de los dedos en la guitarra sobre cada cuerda para hacer sonar cada acorde.
 int[] mim_c = [0, 2, 2, 0, 0, 0];
 int[] sol_c = [3, 2, 0, 0, 0, 3];
 int[] re_c = [0, 0, 0, 2, 3, 2];
@@ -23,13 +26,15 @@ while(i<length(guitar_strings)){
     i++;
 }
 
+// Las 2 cuerdas mas graves no se tocan para el acorde Re. 
 note re = guitar_strings[2] + re_c[2];
-i = 3;
+i = 3; 
 while(i<length(guitar_strings)){
     re = re + (guitar_strings[i] + re_c[i]);
     i++;
 }
 
+// Las cuerda mas graves no se tocan para el acorde La7. 
 note la7 = guitar_strings[1] + la7_c[1];
 i = 2;
 while(i<length(guitar_strings)){
@@ -37,6 +42,7 @@ while(i<length(guitar_strings)){
     i++;
 }
 
+// Las cuerda mas graves no se tocan para el acorde Do. 
 note do = guitar_strings[1] + do_c[1];
 i = 2;
 while(i<length(guitar_strings)){
@@ -47,6 +53,7 @@ while(i<length(guitar_strings)){
 note[] main = [mim, sol, re, la7];
 i=0;
 while(i<7){
+    // Estos tiempos representan el rasgueo de la cancion.
     play main[0] during 0.5 as guitar;
     play main[0] during 0.5 as guitar;
     play main[1] during 0.5 as guitar;

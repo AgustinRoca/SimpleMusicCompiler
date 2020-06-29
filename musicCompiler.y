@@ -72,7 +72,6 @@ size_t threads_length = 0;
 %left BOOL_OP
 %left '+' '-' 
 %left '*' '/'
-%nonassoc "++" "--"
 
 %token BPM INTEGER DOUBLE VOLUME NOTE_T NOTE INT_T DOUBLE_T NEW_ID WHILE PLAY DURING LENGTH INT_VAR DOUBLE_VAR NOTE_VAR INT_ARRAY_VAR DOUBLE_ARRAY_VAR NOTE_ARRAY_VAR AS GUITAR PIANO IN THREAD IF
 %parse-param {char **result}
@@ -226,8 +225,7 @@ NOTE_VAL            : NOTE {$<string>$ = malloc(20 + 3); sprintf($<string>$, "[%
                     | NOTE_ARRAY_VAR '[' INT_ARRAY_VAR ']' {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 3); sprintf($<string>$, "%s[%s]", $<string>1, $<string>3); free($<string>1); free($<string>3);}
                     | NOTE_VAL '+' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 30); sprintf($<string>$, "[A1 * semitones(%s) for A1 in %s]", $<string>3, $<string>1); free($<string>1); free($<string>3);}
                     | NOTE_VAL '+' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s + %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
-                    | NOTE_VAL '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
-                    | NOTE_VAL '-' NOTE_VAL {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 4); sprintf($<string>$, "%s - %s", $<string>1, $<string>3); free($<string>1); free($<string>3);}
+                    | NOTE_VAL '-' INT_STRING {$<string>$ = malloc(strlen($<string>1) + strlen($<string>3) + 31); sprintf($<string>$, "[A1 * semitones(-%s) for A1 in %s]", $<string>3, $<string>1); free($<string>1); free($<string>3);}
                     | NOTE_VAR {$<string>$ = $<string>1;}
                     | '(' NOTE_VAL ')' {$<string>$ = malloc(strlen($<string>2) + 3); sprintf($<string>$, "(%s)", $<string>2); free($<string>2);}
 
@@ -261,14 +259,14 @@ int main() {
     char * result; // esta bien que no este inicializada, se inicializa en yyparse
     vars_hashmap = sorted_hashmap_create();
     if (vars_hashmap == NULL) {
-        return -1; // TODO
+        return -1;
     }
 
     sorted_hashmap_set_hasher(vars_hashmap, vars_hasher_hasher);
     sorted_hashmap_set_cmp(vars_hashmap, vars_hasher_cmp);
     sorted_hashmap_set_freer(vars_hashmap, vars_hasher_freer);
 
-    addThread("thread_0");
+    addThread("thread_0"); // Es el thread por default
     int error = yyparse(&result);
     if(error){
         freeThreads();
@@ -357,7 +355,8 @@ void yyerror (char ** result, const char *s){
     exit(1);
 }
 
-void indent(char* s, int n){
+/* Agrega n tabs al principio de s */
+void indent(char* s, int n){ 
     for (int i = 0; i < n; i++){
         memmove(s + 1, s, strlen(s) + 1);
         memcpy(s, "\t", 1);
@@ -397,10 +396,6 @@ variable_type_t getVarType(char * s){
     return node != NULL ? *((variable_type_t*) sorted_hashmap_get_element(node)) : variable_type_invalid_;
 }
 
-double semitones(int qty){
-    return pow(2, qty/12.0);
-}
-
 void addThread(char * s){
     if(isNewThread(s)){
         if(threads_length % CHUNK == 0){
@@ -419,7 +414,7 @@ int isNewThread(char * s){
     return 1;
 }
 
-char *init_threads(){
+char * init_threads(){
     int threads_names_lengths = 0;
     for(int i=0; i<threads_length; i++){
         threads_names_lengths += strlen(threads[i]);

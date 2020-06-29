@@ -23,17 +23,19 @@ $ make macos_debug
 Unfortunetly there is yet no support for windows
 
 ### Prerequesites
-The following python library is necessary [simple audio](https://github.com/hamiltron/py-simple-audio)
+The following python libraries are necessary: [simple audio](https://github.com/hamiltron/py-simple-audio) [numpy](https://github.com/numpy/numpy)
 
-To install it run:
+To install them run:
 ```sh
 $ pip install simpleaudio
+$ pip install numpy
 ```
 Or with virtualenv:
 ```sh
 $ virtualenv env
 $ source ./env/bin/activate
 $ pip install simpleaudio
+$ pip install numpy
 ```
 ### Run
 To run it:
