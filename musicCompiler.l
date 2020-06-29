@@ -1,8 +1,10 @@
 %{
     #include <stdlib.h>
     #include <math.h>
+    #include <string.h>
     #include "musicCompiler.tab.h"
     #include "utils/variable_types.h"
+    #include "utils/string_utils.h"
 
     variable_type_t getVarType(char * s);
     double freq(char * note_name);
@@ -20,28 +22,28 @@ bool_op (<|>)=?|==
 %%
 
 [\t \n \r]
-"bpm"                               {yylval.string=strdup(yytext); return BPM;}
-"volume"                            {yylval.string=strdup(yytext); return VOLUME;}
-"note"                              {yylval.string=strdup(yytext); return NOTE_T;}
-"int"                               {yylval.string=strdup(yytext); return INT_T;}
-"double"                            {yylval.string=strdup(yytext); return DOUBLE_T;}
-"play"                              {yylval.string=strdup(yytext); return PLAY;}
-"during"                            {yylval.string=strdup(yytext); return DURING;}
-"if"                                {yylval.string=strdup(yytext); return IF;}
-"while"                             {yylval.string=strdup(yytext); return WHILE;}
-"length"                            {yylval.string=strdup("len"); return LENGTH;}
-"as"                                {yylval.string=strdup(yytext); return AS;}
-"guitar"                            {yylval.string=strdup(yytext); return GUITAR;}
-"piano"                             {yylval.string=strdup(yytext); return PIANO;}
-"in"                                {yylval.string=strdup(yytext); return IN;}
-"thread_"{digit}+                   {yylval.string=strdup(yytext); return THREAD;}
-{bool_op}                           {yylval.string=strdup(yytext); return BOOL_OP;}
+"bpm"                               {yylval.string=dupstr(yytext); return BPM;}
+"volume"                            {yylval.string=dupstr(yytext); return VOLUME;}
+"note"                              {yylval.string=dupstr(yytext); return NOTE_T;}
+"int"                               {yylval.string=dupstr(yytext); return INT_T;}
+"double"                            {yylval.string=dupstr(yytext); return DOUBLE_T;}
+"play"                              {yylval.string=dupstr(yytext); return PLAY;}
+"during"                            {yylval.string=dupstr(yytext); return DURING;}
+"if"                                {yylval.string=dupstr(yytext); return IF;}
+"while"                             {yylval.string=dupstr(yytext); return WHILE;}
+"length"                            {yylval.string=dupstr("len"); return LENGTH;}
+"as"                                {yylval.string=dupstr(yytext); return AS;}
+"guitar"                            {yylval.string=dupstr(yytext); return GUITAR;}
+"piano"                             {yylval.string=dupstr(yytext); return PIANO;}
+"in"                                {yylval.string=dupstr(yytext); return IN;}
+"thread_"{digit}+                   {yylval.string=dupstr(yytext); return THREAD;}
+{bool_op}                           {yylval.string=dupstr(yytext); return BOOL_OP;}
 {digit}+                            {yylval.integer=atoi(yytext); return INTEGER;}
 {double}                            {yylval.decimal=atof(yytext); return DOUBLE;}
 "S"                                 {yylval.decimal=0; return NOTE;} /* Importante que este arriba de los IDs! */
 {note}                              {yylval.decimal=freq(yytext); return NOTE;} /* Importante que este arriba de los IDs! */
 {alpha}({alpha}|{digit}|"_")*       {
-                                        yylval.string=strdup(yytext);
+                                        yylval.string=dupstr(yytext);
                                         switch (getVarType(yylval.string)) {
                                             case variable_type_int_: return INT_VAR;
                                             case variable_type_double_: return DOUBLE_VAR;

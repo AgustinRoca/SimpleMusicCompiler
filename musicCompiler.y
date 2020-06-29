@@ -7,6 +7,7 @@
 
 #include "utils/sorted_hashmap.h"
 #include "utils/variable_types.h"
+#include "utils/string_utils.h"
 
 #define CHUNK 10
 
@@ -364,27 +365,27 @@ void indent(char* s, int n){
 }
 
 void addToInts(char * s){
-    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_int);
+    sorted_hashmap_add(vars_hashmap, dupstr(s), &variable_type_int);
 }
 
 void addToDoubles(char * s){
-    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_double);
+    sorted_hashmap_add(vars_hashmap, dupstr(s), &variable_type_double);
 }
 
 void addToNotes(char * s){
-    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_note);
+    sorted_hashmap_add(vars_hashmap, dupstr(s), &variable_type_note);
 }
 
 void addToIntArrays(char * s){
-    sorted_hashmap_node node = sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_int_array);
+    sorted_hashmap_add(vars_hashmap, dupstr(s), &variable_type_int_array);
 }
 
 void addToDoubleArrays(char * s){
-    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_double_array);
+    sorted_hashmap_add(vars_hashmap, dupstr(s), &variable_type_double_array);
 }
 
 void addToNoteArrays(char * s){
-    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_note_array);
+    sorted_hashmap_add(vars_hashmap, dupstr(s), &variable_type_note_array);
 }
 
 void freeVars(void){
@@ -401,7 +402,7 @@ void addThread(char * s){
         if(threads_length % CHUNK == 0){
             threads = realloc(threads, sizeof(*threads) * (threads_length + CHUNK));
         }
-        threads[threads_length++] = strdup(s);
+        threads[threads_length++] = dupstr(s);
     }
 }
 
