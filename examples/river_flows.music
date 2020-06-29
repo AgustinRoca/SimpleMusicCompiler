@@ -1,5 +1,5 @@
 bpm 72;
-volume 1/2.0;
+volume 0.5;
 
 note[] right_hand = [A5, G#5, A5, G#5, A5, E5, A5];
 int i=0;

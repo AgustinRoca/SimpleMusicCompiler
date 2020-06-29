@@ -1,5 +1,5 @@
 bpm 124;
-volume 1/2.0;
+volume 0.5;
 note mim = E5 + G5 + B4;
 note sol = G5 + B4 + D5;
 note do = C5 + E5 + G5;
