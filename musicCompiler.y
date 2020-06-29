@@ -70,6 +70,7 @@ size_t threads_length = 0;
     char *string;
 }
 
+%expect 20
 %left BOOL_OP
 %left '+' '-' 
 %left '*' '/'
