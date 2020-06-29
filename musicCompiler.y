@@ -377,7 +377,7 @@ void addToNotes(char * s){
 }
 
 void addToIntArrays(char * s){
-    sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_int_array);
+    sorted_hashmap_node node = sorted_hashmap_add(vars_hashmap, strdup(s), &variable_type_int_array);
 }
 
 void addToDoubleArrays(char * s){
@@ -478,7 +478,8 @@ hash_t vars_hasher_hasher(void *key) {
 }
 
 int8_t vars_hasher_cmp(void *k1, void *k2) {
-    return strcmp((char *) k1, (char *) k2);
+    int cmp = strcmp((char *) k1, (char *) k2);
+    return cmp == 0 ? 0 : (cmp < 0 ? -1 : 1);
 }
 
 void vars_hasher_freer(void *key, void *value) {
